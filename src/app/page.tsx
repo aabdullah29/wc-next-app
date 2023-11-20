@@ -31,6 +31,7 @@ export default function Home() {
   //   chainId: 1,
   // })
 
+  const polygonMumbaiNetworkId = 80001;
   const [sendAmount, toAddress] = [
     parseEther("0.0001"),
     "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
@@ -88,8 +89,7 @@ export default function Home() {
     }
   }, [isSuccess, callFunction]);
 
-
-  //
+  // set selecter token's data
   const handleOptionChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.value === "eth") {
       setSelectedToken({
@@ -108,6 +108,13 @@ export default function Home() {
         contractAddress: "0x6AD196dBcd43996F17638B924d2fdEDFF6Fdd677",
         recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
         amount: 10000000,
+      });
+    } else if (event.target.value === "mumbaiUsdc") {
+      setSelectedToken({
+        name: "mumbaiUsdc",
+        contractAddress: "0x0FA8781a83E46826621b3BC094Ea2A0212e71B23",
+        recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
+        amount: 1000000,
       });
     } else {
       setSelectedToken("");
@@ -138,22 +145,31 @@ export default function Home() {
             checked={selectedToken?.name === "usdt"}
             onChange={handleOptionChange}
           />
-          {selectedToken && selectedToken?.name !== "eth" && (
-            <SendERC20
-              {...{
-                tokenName: selectedToken?.name,
-                contractAddress: selectedToken?.contractAddress,
-                recipientAddress: selectedToken?.recipientAddress,
-                senderAddrss: address,
-                amount: selectedToken?.amount,
-                chainId: selectedNetworkId ? 0 : Number(selectedNetworkId),
-                callFunction: callFunction,
-                setCallFunction: setCallFunction,
-              }}
-            />
-          )}
+          <RadioButton
+            label="Mumbai USDC"
+            value="mumbaiUsdc"
+            checked={selectedToken?.name === "mumbaiUsdc"}
+            onChange={handleOptionChange}
+          />
+          {selectedToken &&
+            selectedToken?.name !== "eth" &&
+            selectedNetworkId && (
+              <SendERC20
+                {...{
+                  tokenName: selectedToken?.name,
+                  contractAddress: selectedToken?.contractAddress,
+                  recipientAddress: selectedToken?.recipientAddress,
+                  senderAddrss: address,
+                  amount: selectedToken?.amount,
+                  chainId: Number(selectedNetworkId),
+                  callFunction: callFunction,
+                  setCallFunction: setCallFunction,
+                }}
+              />
+            )}
         </div>
       }
+
       <div className={styles.center}>
         {selectedToken?.name && (
           <w3m-button balance={"show"} size={"md"}></w3m-button>
