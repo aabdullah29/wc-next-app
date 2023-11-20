@@ -18,6 +18,7 @@ import { parseEther } from "viem";
 import { usdc_abi, usdt_abi } from "./abi.json";
 import RadioButton from "./RadioButton";
 import SendERC20 from "./SendERC20";
+import { disconnect } from "@wagmi/core";
 
 export default function Home() {
   const [selectedToken, setSelectedToken] = useState<any>();
@@ -40,7 +41,7 @@ export default function Home() {
     to: toAddress,
     value: sendAmount,
   });
-  const { sendTransaction } = useSendTransaction(config);
+  const { sendTransaction, isSuccess, data } = useSendTransaction(config);
 
   useEffect(() => {
     console.log(`
@@ -52,25 +53,41 @@ export default function Home() {
   }, [selectedNetworkId, address]);
 
   useEffect(() => {
+    console.log("isDisconnected::::", isDisconnected);
     if (address && selectedNetworkId && !isDisconnected) {
-      console.log(":::send funds::");
-      setTimeout(() => {
-        if (selectedToken?.name === "eth" && callFunction !== "done") {
-        console.log(":::sending eth::");
+      if (
+        selectedToken?.name === "eth" &&
+        callFunction !== "call" &&
+        callFunction !== "done"
+      ) {
+        console.log("::::sending eth::");
+        if (sendTransaction) {
           sendTransaction?.();
           setCallFunction("call");
-        } else {
-          if (selectedToken?.name && selectedToken?.name !== "erc" && callFunction!== "done") {
-            console.log(":::sending erc20::");
-            setCallFunction("call");
-          }
         }
-      }, 1000);
+      } else if (selectedToken?.name && selectedToken?.name !== "erc") {
+        console.log("::::sending erc20::");
+        setCallFunction("call");
+      }
     }
-    if(isDisconnected){
-      setCallFunction("");
+  }, [
+    address,
+    selectedNetworkId,
+    isDisconnected,
+    selectedToken?.name,
+    sendTransaction,
+  ]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log("isSuccess:::: ", isSuccess);
+      console.log("tx data:::: ", JSON.stringify(data));
+      (async () => {
+        await disconnect();
+      })();
     }
-  }, [address, selectedNetworkId, selectedToken?.name]);
+  }, [isSuccess, callFunction]);
+
 
   //
   const handleOptionChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -99,42 +116,44 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      {callFunction !== 'done' && <div className={styles.description}>
-        {/* {SignMessage()} */}
-        <h3>please select one token</h3>
-        <RadioButton
-          label="ETH"
-          value="eth"
-          checked={selectedToken?.name === "eth"}
-          onChange={handleOptionChange}
-        />
-        <RadioButton
-          label="USDC"
-          value="usdc"
-          checked={selectedToken?.name === "usdc"}
-          onChange={handleOptionChange}
-        />
-        <RadioButton
-          label="USDT"
-          value="usdt"
-          checked={selectedToken?.name === "usdt"}
-          onChange={handleOptionChange}
-        />
-        {selectedToken && selectedToken?.name !== "eth" && (
-          <SendERC20
-            {...{
-              tokenName: selectedToken?.name,
-              contractAddress: selectedToken?.contractAddress,
-              recipientAddress: selectedToken?.recipientAddress,
-              senderAddrss: address,
-              amount: selectedToken?.amount,
-              chainId: selectedNetworkId ? 0 : Number(selectedNetworkId),
-              callFunction: callFunction,
-              setCallFunction: setCallFunction,
-            }}
+      {
+        <div className={styles.description}>
+          {/* {SignMessage()} */}
+          <h3>please select one token</h3>
+          <RadioButton
+            label="ETH"
+            value="eth"
+            checked={selectedToken?.name === "eth"}
+            onChange={handleOptionChange}
           />
-        )}
-      </div>}
+          <RadioButton
+            label="USDC"
+            value="usdc"
+            checked={selectedToken?.name === "usdc"}
+            onChange={handleOptionChange}
+          />
+          <RadioButton
+            label="USDT"
+            value="usdt"
+            checked={selectedToken?.name === "usdt"}
+            onChange={handleOptionChange}
+          />
+          {selectedToken && selectedToken?.name !== "eth" && (
+            <SendERC20
+              {...{
+                tokenName: selectedToken?.name,
+                contractAddress: selectedToken?.contractAddress,
+                recipientAddress: selectedToken?.recipientAddress,
+                senderAddrss: address,
+                amount: selectedToken?.amount,
+                chainId: selectedNetworkId ? 0 : Number(selectedNetworkId),
+                callFunction: callFunction,
+                setCallFunction: setCallFunction,
+              }}
+            />
+          )}
+        </div>
+      }
       <div className={styles.center}>
         {selectedToken?.name && (
           <w3m-button balance={"show"} size={"md"}></w3m-button>

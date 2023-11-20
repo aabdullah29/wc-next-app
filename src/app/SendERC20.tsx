@@ -7,7 +7,7 @@ import { useContractWrite, usePrepareContractWrite, useBalance } from "wagmi";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { parseEther } from "viem";
 import { usdc_abi as usdcABI, usdt_abi as usdtABI } from "./abi.json";
-
+import { disconnect } from "@wagmi/core";
 export interface SendERC20Props {
   tokenName: string;
   contractAddress: any;
@@ -51,16 +51,20 @@ export default function SendERC20(props: SendERC20Props) {
 
   useEffect(() => {
     console.log(":::sending erc20 call: ", props?.callFunction);
-    if (props.callFunction === "call") {
-      setTimeout(() => {
+    if (props.callFunction === "call" && write) {
         write?.();
         props.setCallFunction("done");
-      }, 1000);
     }
+  }, [props.callFunction, write]);
+
+  useEffect(() => {
     if (isSuccess) {
-      console.log(JSON.stringify(data));
+      console.log('tx data:::: ',JSON.stringify(data));
+      (async () => {
+        await disconnect();
+      })();
     }
-  }, [props.callFunction, isSuccess]);
+  }, [isSuccess]);
 
   return (
     // <div>
