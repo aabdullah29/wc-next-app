@@ -8,7 +8,6 @@ interface ButtonProps {
 }
 
 const Button: React.FC<ButtonProps> = ({ onClick, text }) => {
-  console.log('button')
   return (
     <button onClick={onClick}>
       {text}

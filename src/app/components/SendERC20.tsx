@@ -6,53 +6,49 @@ import Button from "./Button";
 import { useContractWrite, usePrepareContractWrite, useBalance } from "wagmi";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { parseEther } from "viem";
-import {
-  usdc_abi as usdcABI,
-  usdt_abi as usdtABI,
-  usdc_mumbai_abi as usdcMumbaiABI,
-} from "./abi.json";
 import { disconnect } from "@wagmi/core";
+import { tokens } from "../utils/chainAndTokens";
+import { useRouter } from "next/navigation";
+
+
 export interface SendERC20Props {
   tokenName: string;
-  contractAddress: any;
-  recipientAddress: string;
   senderAddrss: any;
-  amount: number;
   chainId: number;
   callFunction: string;
   setCallFunction: Dispatch<SetStateAction<string>>;
 }
 
 export default function SendERC20(props: SendERC20Props) {
+
+  const tokenData =
+    props?.chainId &&
+    props?.tokenName &&
+    tokens[props?.chainId] &&
+    tokens[props?.chainId][props?.tokenName]
+      ? tokens[props?.chainId][props?.tokenName]
+      : tokens[5]["usdc_abi"];
+
+
   const {
     data: dataBalance,
     isError: isErrorBalance,
     isLoading: isLoadingBalance,
   } = useBalance({
     address: props.senderAddrss, // wallet address
-    token: props.contractAddress, // balance of token
+    token: tokenData?.contractAddress, // balance of token
     chainId: props.chainId,
   });
-
+  const router = useRouter();
   console.log("useBalance: data:: ", dataBalance);
-
-  const usdt_abi: any = [...usdtABI];
-  const usdc_abi: any = [...usdcABI];
-  const usdc_mumbai_abi: any = [...usdcMumbaiABI];
-  let abi = props?.tokenName === "usdt" ? usdt_abi : usdc_abi;
-  abi =
-    props.chainId === 80001 && props?.tokenName === "mumbaiUsdc"
-      ? usdc_mumbai_abi
-      : abi;
-
   // prepare the transaction
   const { config } = usePrepareContractWrite({
-    address: props.contractAddress,
-    abi: abi,
+    address: tokenData?.contractAddress,
+    abi: tokenData?.abi,
     functionName: "transfer",
     args: [
-      props.recipientAddress,
-      props.amount, // convert to wei
+      tokenData?.recipientAddress,
+      tokenData?.amount, // convert to wei
     ],
     chainId: props.chainId,
   });
@@ -61,8 +57,8 @@ export default function SendERC20(props: SendERC20Props) {
   const { data, isLoading, isSuccess, write } = useContractWrite(config);
 
   useEffect(() => {
-    console.log(":::sending erc20 call: ", props?.callFunction);
     if (props.callFunction === "call" && write) {
+      console.log("=====> sending erc20 call: ", props?.callFunction);
       write?.();
       props.setCallFunction("done");
     }
@@ -73,6 +69,7 @@ export default function SendERC20(props: SendERC20Props) {
       console.log("tx data:::: ", JSON.stringify(data));
       (async () => {
         await disconnect();
+        router.back();
       })();
     }
   }, [isSuccess]);
