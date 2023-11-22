@@ -1,5 +1,7 @@
 import { usdc_abi, usdt_abi, usdc_mumbai_abi } from "../assets/abi.json";
 
+export const projectId: string = "0854ce5ff73158f88d93e8f047ff33d7";
+
 export const chains: any = {
   eth: true,
   matic: true,

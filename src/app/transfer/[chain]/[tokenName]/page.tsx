@@ -48,7 +48,7 @@ export default function Home({
         disconnect().then(() => {
           if (isDisconnected) {
             console.log("++disconnect++");
-            router.back();
+            // router.back();
           }
         });
       }, 800);
