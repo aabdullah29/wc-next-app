@@ -6,8 +6,10 @@ import { WagmiConfig } from 'wagmi'
 import { arbitrum, mainnet, goerli, polygonMumbai } from 'viem/chains'
 import { ReactNode } from 'react'
 
+const wc_projectId = process.env.VITE_PROJECT_ID;
+
 // 1. Get projectId
-const projectId = '0854ce5ff73158f88d93e8f047ff33d7'
+const projectId = wc_projectId ? wc_projectId : "";
 
 // 2. Create wagmiConfig
 const metadata = {
