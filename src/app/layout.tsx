@@ -17,9 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <ProviderWeb3Modal>
-        <body className={inter.className}>{children}</body>
-      </ProviderWeb3Modal>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
