@@ -16,6 +16,10 @@ export const chainsData: any = {
     toAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
     amount: "0.0001",
   },
+  solana: {
+    toAddress: "FsHdPWvGPPz4i2KB8UdXi1bHQwHXHNTdARMbzfQyJh8H",
+    amount: 1000,
+  }
 };
 
 export const tokens: any = {
