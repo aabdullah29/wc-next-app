@@ -1,3 +1,4 @@
+
 {
   "name": "next-wc-app",
   "version": "0.1.0",
@@ -14,7 +15,12 @@
     "react": "^18",
     "react-dom": "^18",
     "viem": "^1.18.9",
-    "wagmi": "^1.4.5"
+    "wagmi": "^1.4.5",
+    "@solana/web3.js": "^1.78.4",
+    "@walletconnect/modal": "^2.6.2",
+    "@walletconnect/universal-provider": "^2.10.1",
+    "bs58": "^5.0.0",
+    "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
     "@types/node": "^20",
