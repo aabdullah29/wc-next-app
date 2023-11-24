@@ -1,15 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import styles from "./page.module.css";
-import Button from "./Button";
 import { useContractWrite, usePrepareContractWrite, useBalance } from "wagmi";
 import { Dispatch, SetStateAction, useEffect } from "react";
-import { parseEther } from "viem";
 import { disconnect } from "@wagmi/core";
 import { tokens } from "../utils/chainAndTokens";
 import { useRouter } from "next/navigation";
-
 
 export interface SendERC20Props {
   tokenName: string;
@@ -20,7 +15,6 @@ export interface SendERC20Props {
 }
 
 export default function SendERC20(props: SendERC20Props) {
-
   const tokenData =
     props?.chainId &&
     props?.tokenName &&
@@ -28,7 +22,6 @@ export default function SendERC20(props: SendERC20Props) {
     tokens[props?.chainId][props?.tokenName]
       ? tokens[props?.chainId][props?.tokenName]
       : tokens[5]["usdc_abi"];
-
 
   const {
     data: dataBalance,
@@ -54,7 +47,8 @@ export default function SendERC20(props: SendERC20Props) {
   });
 
   // get the transfer function
-  const { data, isLoading, isSuccess, write } = useContractWrite(config);
+  const { data, isLoading, isSuccess, isError, write } =
+    useContractWrite(config);
 
   useEffect(() => {
     if (props.callFunction === "call" && write) {
@@ -65,14 +59,15 @@ export default function SendERC20(props: SendERC20Props) {
   }, [props.callFunction, write]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess || isError) {
+      console.log("isSuccess , isError :::: ", isSuccess, isError);
       console.log("tx data:::: ", JSON.stringify(data));
       (async () => {
         await disconnect();
         router.back();
       })();
     }
-  }, [isSuccess]);
+  }, [isSuccess, isError]);
 
   return (
     // <div>

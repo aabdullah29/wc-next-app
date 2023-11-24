@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
 import styles from "../../../page.module.css";
-import Button from "../../../components/Button";
 import { useWeb3Modal, useWeb3ModalState } from "@web3modal/wagmi/react";
 import {
   useAccount,
@@ -13,11 +11,9 @@ import {
   useContractWrite,
   usePrepareContractWrite,
 } from "wagmi";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { parseEther } from "viem";
-import { usdc_abi, usdt_abi } from "../../../assets/abi.json";
-import RadioButton from "../../../components/RadioButton";
-import SendERC20 from "../../../components/SendERC20";
+import SendERC20 from "../../SendERC20";
 import { disconnect } from "@wagmi/core";
 import { chains, chainsData } from "../../../utils/chainAndTokens";
 import { useRouter } from "next/navigation";
@@ -39,21 +35,26 @@ export default function Home({
     to: chainsData[chain]?.toAddress,
     value: parseEther(chainsData[chain]?.amount),
   });
-  const { sendTransaction, isSuccess, data } = useSendTransaction(config);
+  const { sendTransaction, isSuccess, data, isError } =
+    useSendTransaction(config);
 
   useEffect(() => {
-    // at page reload
-    return () => {
-      setTimeout(() => {
-        disconnect().then(() => {
-          if (isDisconnected) {
-            console.log("++disconnect++");
-            // router.back();
-          }
-        });
-      }, 800);
-    };
-  }, []);
+    console.log("isError===: ", isError);
+  }, [isError]);
+
+  // useEffect(() => {
+  //   // at page reload
+  //   return () => {
+  //     setTimeout(() => {
+  //       disconnect().then(() => {
+  //         if (isDisconnected) {
+  //           console.log("++disconnect++");
+  //           // router.back();
+  //         }
+  //       });
+  //     }, 800);
+  //   };
+  // }, []);
 
   useEffect(() => {
     console.log(`
@@ -83,15 +84,15 @@ export default function Home({
   }, [address, selectedNetworkId, isDisconnected, tokenName, sendTransaction]);
 
   useEffect(() => {
-    if (isSuccess) {
-      console.log("isSuccess:::: ", isSuccess);
+    if (isSuccess || isError) {
+      console.log("isSuccess , isError :::: ", isSuccess, isError);
       console.log("tx data:::: ", JSON.stringify(data));
       (async () => {
         await disconnect();
         router.back();
       })();
     }
-  }, [isSuccess, callFunction]);
+  }, [isSuccess, isError, callFunction]);
 
   return (
     <main className={styles.main}>

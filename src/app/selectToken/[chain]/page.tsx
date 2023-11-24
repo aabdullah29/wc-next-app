@@ -1,17 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import styles from "../../page.module.css";
-import Button from "../../components/Button";
-import { ChangeEvent, useEffect, useState } from "react";
-import { parseEther } from "viem";
-import { usdc_abi, usdt_abi } from "../../assets/abi.json";
-import RadioButton from "../../components/RadioButton";
-import SendERC20 from "../../components/SendERC20";
-import { disconnect } from "@wagmi/core";
+import { useEffect, useState } from "react";
 import EthTokens from "../ethTokens";
 import PolygonMumbaiTokens from "../polygonMumbaiTokens";
-import { chains } from "../../utils/chainAndTokens";
 import { useRouter } from "next/navigation";
 
 export default function Home({ params }: { params: { chain: string } }) {
@@ -20,9 +12,7 @@ export default function Home({ params }: { params: { chain: string } }) {
 
   useEffect(() => {
     if (selectedToken?.name) {
-      router.replace(
-        `/transfer/${params?.chain}/${selectedToken?.name}`
-      );
+      router.replace(`/transfer/${params?.chain}/${selectedToken?.name}`);
     }
   }, [selectedToken?.name]);
 
@@ -45,8 +35,7 @@ export default function Home({ params }: { params: { chain: string } }) {
           />
         )}
       </div>
-      <div className={styles.center}>
-      </div>
+      <div className={styles.center}></div>
       <div className={styles.grid}></div>
     </main>
   );
