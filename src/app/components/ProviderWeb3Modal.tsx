@@ -21,7 +21,7 @@ const chains = [mainnet, goerli, arbitrum, polygonMumbai];
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 
 // 3. Create modal
-createWeb3Modal({ wagmiConfig, projectId, chains });
+createWeb3Modal({ wagmiConfig, projectId, chains, featuredWalletIds: [] });
 
 export default function ProviderWeb3Modal({
   children,
