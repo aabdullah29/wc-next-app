@@ -166,6 +166,7 @@ export const sendTransaction = async (
     };
     // eslint-disable-next-line
   } catch (error: any) {
+    return { error: error };
     throw new Error(error);
   }
 };

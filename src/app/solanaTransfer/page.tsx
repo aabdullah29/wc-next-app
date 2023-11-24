@@ -112,9 +112,10 @@ export default function Home() {
   // };
 
   const handleSend = async () => {
+    console.log("sendTx");
     const provider = await getProvider();
     const res = await sendTransaction(toAddress!, amount, provider, address!);
-    console.log(res);
+    console.log("res: ", res);
     await disconnect();
     router.back();
   };
@@ -130,17 +131,15 @@ export default function Home() {
   return (
     <main className={styles.main}>
       {isConnected && (
-        <>
+        <div className={styles.description}>
           <p>
-            <b>Public Key: </b>
+            <b>Address: </b>
             {address}
           </p>
-          <div className={styles.description}>
-            {/* <button onClick={handleSign}>Sign</button> */}
-            {/* <button onClick={handleSend}>Send</button> */}
-            <button onClick={disconnect}>Disconnect</button>
-          </div>
-        </>
+          {/* <button onClick={handleSign}>Sign</button> */}
+          {/* <button onClick={handleSend}>Send</button> */}
+          <button onClick={disconnect}>Disconnect</button>
+        </div>
       )}
 
       {!isConnected && <button onClick={connect}>Connect</button>}
