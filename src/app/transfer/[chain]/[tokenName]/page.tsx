@@ -42,19 +42,19 @@ export default function Home({
     console.log("isError===: ", isError);
   }, [isError]);
 
-  // useEffect(() => {
-  //   // at page reload
-  //   return () => {
-  //     setTimeout(() => {
-  //       disconnect().then(() => {
-  //         if (isDisconnected) {
-  //           console.log("++disconnect++");
-  //           // router.back();
-  //         }
-  //       });
-  //     }, 800);
-  //   };
-  // }, []);
+  useEffect(() => {
+    // at page reload
+    return () => {
+      setTimeout(() => {
+        disconnect().then(() => {
+          if (isDisconnected) {
+            console.log("++disconnect++");
+            // router.back();
+          }
+        });
+      }, 800);
+    };
+  }, []);
 
   useEffect(() => {
     console.log(`
