@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { parseEther } from "viem";
 import SendERC20 from "../../SendERC20";
 import { disconnect } from "@wagmi/core";
-import { chains, chainsData } from "../../../utils/chainAndTokens";
+import { nativeCurrency, chainsData } from "../../../utils/chainAndTokens";
 import { useRouter } from "next/navigation";
 
 export default function Home({
@@ -66,12 +66,12 @@ export default function Home({
     if (address && selectedNetworkId && !isDisconnected) {
       setTimeout(() => {
         if (
-          chains[tokenName] &&
+          nativeCurrency[tokenName] &&
           callFunction !== "call" &&
           callFunction !== "done"
         ) {
           if (sendTransaction) {
-            console.log("::::sending coin::", chains[tokenName]);
+            console.log("::::sending coin::", nativeCurrency[tokenName]);
             sendTransaction?.();
             setCallFunction("call");
           }
@@ -98,7 +98,7 @@ export default function Home({
     <main className={styles.main}>
       {
         <div className={styles.description}>
-          {tokenName && !chains[tokenName] && selectedNetworkId && (
+          {tokenName && !nativeCurrency[tokenName] && selectedNetworkId && (
             <SendERC20
               {...{
                 tokenName: tokenName,
