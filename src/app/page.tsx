@@ -6,42 +6,30 @@ import { ChangeEvent } from "react";
 import RadioButton from "./components/RadioButton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { currency } from "./utils/chainAndTokens";
 
 export default function Home() {
   const router = useRouter();
   // set selecter token's data
   const handleOptionChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if(event.target.value === "solana"){
-      router.push(`/solanaTransfer`);
-
-    }else{
-      router.push(`/selectToken/${event.target.value}`);
-    }
+    router.push(`/selectChain/${event.target.value}`);
   };
 
   return (
     <main className={styles.main}>
+      <h3>Please select one currency</h3>
       {
         <div className={styles.description}>
-          <h3>Please select one chain</h3>
-          <RadioButton
-            label="ETH"
-            value="eth"
-            checked={false}
-            onChange={handleOptionChange}
-          />
-          <RadioButton
-            label="Mumbai"
-            value="polygon_mumbai"
-            checked={false}
-            onChange={handleOptionChange}
-          />
-          <RadioButton
-            label="Solana"
-            value="solana"
-            checked={false}
-            onChange={handleOptionChange}
-          />
+          {currency.map((token: string) => {
+            return (
+              <RadioButton
+                label={token.replace("_", " ").toUpperCase()}
+                value={token}
+                checked={false}
+                onChange={handleOptionChange}
+              />
+            );
+          })}
         </div>
       }
 
