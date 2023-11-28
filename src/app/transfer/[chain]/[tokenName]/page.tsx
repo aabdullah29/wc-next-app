@@ -28,6 +28,7 @@ export default function Home({
 }) {
   const router = useRouter();
   const [callFunction, setCallFunction] = useState<string>("");
+  const [connectButton, setConnectButton] = useState<Boolean>(false);
 
   const { open, selectedNetworkId } = useWeb3ModalState();
   const { address, isConnecting, isDisconnected } = useAccount();
@@ -44,6 +45,7 @@ export default function Home({
 
   useEffect(() => {
     // at page reload
+    setConnectButton(false);
     return () => {
       setTimeout(() => {
         disconnect().then(() => {
@@ -51,6 +53,7 @@ export default function Home({
             console.log("++disconnect++");
             // router.back();
           }
+          setConnectButton(true);
         });
       }, 800);
     };
@@ -114,7 +117,10 @@ export default function Home({
 
       <div className={styles.description}></div>
       <div className={styles.center}>
-        {tokenName && <w3m-button balance={"show"} size={"md"}></w3m-button>}
+        {tokenName && connectButton && (
+          <w3m-button balance={"show"} size={"md"}></w3m-button>
+        )}
+        {/* <button onClick={disconnect}>Disconnect</button> */}
       </div>
       <div className={styles.grid}></div>
     </main>

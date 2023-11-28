@@ -4,14 +4,14 @@ import styles from "../../page.module.css";
 import { ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import RadioButton from "@/app/components/RadioButton";
-import { networkForCurrency } from "@/app/utils/chainAndTokens";
+import { network, networkForCurrency } from "@/app/utils/chainAndTokens";
 
 export default function Home({ params: {currency} }: { params: { currency: string } }) {
   const router = useRouter();
   
   const handleOptionChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value === "solana"){
-      // router.replace(`/transfer/${event.target.value}/${currency}`);
+    if (event.target.value === network.solana){
+      router.replace(`/solanaTransfer`);
     } else{
       router.replace(`/transfer/${event.target.value}/${currency}`);
     }

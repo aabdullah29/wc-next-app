@@ -3,17 +3,24 @@ import { usdc_abi, usdt_abi, usdc_mumbai_abi } from "../assets/abi.json";
 // wallet connect project id
 export const projectId: string = "0854ce5ff73158f88d93e8f047ff33d7";
 
+// all chains
+export const network = {
+  ethereum :'ethereum',
+  polygonMumbai : 'polygon_mumbai',
+  solana : 'solana',
+}
+
 // all currency list
 export const currency: any = ['eth', 'usdc', 'usdt', 'matic', 'sol'];
 
 
 // network or chains for each currency
 export const networkForCurrency: any = {
-  eth: ["eth"],
-  usdc : ["eth", "polygon_mumbai"],
-  usdt: ["eth"],
-  matic: ["polygon_mumbai"],
-  sol:["solana"]
+  eth: [network.ethereum],
+  usdc : [network.ethereum, network.polygonMumbai],
+  usdt: [network.ethereum],
+  matic: [network.polygonMumbai],
+  sol:[network.solana]
 }
 
 
@@ -26,15 +33,15 @@ export const nativeCurrency: any = {
 
 // for native currensy transfer
 export const chainsData: any = {
-  eth: {
+  [network.ethereum]: {
     toAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
     amount: "0.0001",
   },
-  polygon_mumbai: {
+  [network.polygonMumbai]: {
     toAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
     amount: "0.0001",
   },
-  solana: {
+  [network.solana]: {
     toAddress: "FsHdPWvGPPz4i2KB8UdXi1bHQwHXHNTdARMbzfQyJh8H",
     amount: 1000,
   }
