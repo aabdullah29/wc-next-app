@@ -11,9 +11,9 @@ import { projectId } from "../utils/chainAndTokens";
 
 // 2. Create wagmiConfig
 const metadata = {
-  name: "Web3Modal",
-  description: "Web3Modal Example",
-  url: "https://web3modal.com",
+  name: "LocalHostWeb3Modal",
+  description: "Web3Modal Localhost Wallet Connect Example",
+  url: "http://localhost:3000",
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 
@@ -21,7 +21,12 @@ const chains = [mainnet, goerli, arbitrum, polygonMumbai];
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 
 // 3. Create modal
-createWeb3Modal({ wagmiConfig, projectId, chains, featuredWalletIds: [] });
+const provider = createWeb3Modal({
+  wagmiConfig,
+  projectId,
+  chains,
+  featuredWalletIds: [],
+});
 
 export default function ProviderWeb3Modal({
   children,
