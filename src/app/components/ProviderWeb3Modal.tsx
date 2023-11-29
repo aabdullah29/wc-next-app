@@ -3,9 +3,8 @@
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
 
 import { WagmiConfig } from "wagmi";
-import { arbitrum, mainnet, goerli, polygonMumbai } from "viem/chains";
 import { ReactNode } from "react";
-import { projectId } from "../utils/chainAndTokens";
+import { projectId, allChains } from "../utils/chainAndTokens";
 
 // 1. Get projectId
 
@@ -17,14 +16,18 @@ const metadata = {
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 
-const chains = [mainnet, goerli, arbitrum, polygonMumbai];
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
+const wagmiConfig = defaultWagmiConfig({
+  chains: allChains,
+  projectId,
+  metadata,
+});
 
 // 3. Create modal
 const provider = createWeb3Modal({
   wagmiConfig,
   projectId,
-  chains,
+  chains: allChains,
+  // defaultChain: allChains[0],
   featuredWalletIds: [],
 });
 

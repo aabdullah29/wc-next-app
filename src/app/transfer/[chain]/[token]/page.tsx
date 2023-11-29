@@ -10,42 +10,61 @@ import {
   useBalance,
   useContractWrite,
   usePrepareContractWrite,
+  useNetwork,
+  useSwitchNetwork,
 } from "wagmi";
 import { useEffect, useState } from "react";
 import { parseEther } from "viem";
 import SendERC20 from "../../SendERC20";
 import { disconnect } from "@wagmi/core";
-import { nativeCurrency, chainsData } from "../../../utils/chainAndTokens";
+import {
+  nativeCurrency,
+  chainsData,
+  allChains,
+} from "../../../utils/chainAndTokens";
 import { useRouter } from "next/navigation";
 
 export default function Home({
-  params: { chain, tokenName },
+  params: { chain: selectedChain, token },
 }: {
   params: {
     chain: string;
-    tokenName: string;
+    token: string;
   };
 }) {
+  const tokenName = token.substring(0, token.indexOf("_"));
+  const tokenAmount = token.substring(token.indexOf("_") + 1, token.length);
+
   const router = useRouter();
   const [callFunction, setCallFunction] = useState<string>("");
   const [connectButton, setConnectButton] = useState<Boolean>(false);
 
+  const { chain } = useNetwork();
+  const {
+    chains,
+    error: errorSwitchNetwork,
+    isLoading,
+    pendingChainId,
+    switchNetwork,
+  } = useSwitchNetwork();
+
   const { open, selectedNetworkId } = useWeb3ModalState();
   const { address, isConnecting, isDisconnected } = useAccount();
+
   const { config, error } = usePrepareSendTransaction({
-    to: chainsData[chain]?.toAddress,
-    value: parseEther(chainsData[chain]?.amount),
+    to: chainsData[selectedChain]?.toAddress,
+    value: parseEther(tokenAmount),
   });
   const { sendTransaction, isSuccess, data, isError } =
     useSendTransaction(config);
 
-  useEffect(() => {
-    console.log("isError===: ", isError);
-  }, [isError]);
+  const currentNetworkId = allChains.find(
+    (chain) => selectedChain === chain.name
+  )?.id;
 
   useEffect(() => {
-    // at page reload
     setConnectButton(false);
+    // at page reload
     return () => {
       setTimeout(() => {
         disconnect().then(() => {
@@ -64,9 +83,17 @@ export default function Home({
     \nisDisconnected: ${isDisconnected}
     \nselectedNetworkId: ${selectedNetworkId}
     \nfromAddress: ${address}
-    \ntoAddress: ${chainsData[chain]?.toAddress}
-    \nsendAmount: ${chainsData[chain]?.amount}`);
-    if (address && selectedNetworkId && !isDisconnected) {
+    \ntoAddress: ${chainsData[selectedChain]?.toAddress}`);
+
+    if (selectedNetworkId !== currentNetworkId) {
+      disconnect().then(() => {
+        if (isDisconnected) {
+          console.log("++disconnect++ Network is not same.");
+          // router.back();
+          setConnectButton(true);
+        }
+      });
+    } else if (address && selectedNetworkId && !isDisconnected) {
       setTimeout(() => {
         if (
           nativeCurrency[tokenName] &&
@@ -105,6 +132,7 @@ export default function Home({
             <SendERC20
               {...{
                 tokenName: tokenName,
+                tokenAmount: tokenAmount,
                 senderAddrss: address,
                 chainId: Number(selectedNetworkId),
                 callFunction: callFunction,
@@ -120,6 +148,18 @@ export default function Home({
         {tokenName && connectButton && (
           <w3m-button balance={"show"} size={"md"}></w3m-button>
         )}
+        {/* {
+          <button
+            disabled={!switchNetwork}
+            onClick={() =>
+              switchNetwork?.(
+                allChains.find((chain) => selectedChain === chain.name)?.id
+              )
+            }
+          >
+            {selectedChain}
+          </button>
+        } */}
         {/* <button onClick={disconnect}>Disconnect</button> */}
       </div>
       <div className={styles.grid}></div>

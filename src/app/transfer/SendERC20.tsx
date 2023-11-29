@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 
 export interface SendERC20Props {
   tokenName: string;
+  tokenAmount: any;
   senderAddrss: any;
   chainId: number;
   callFunction: string;
@@ -41,7 +42,7 @@ export default function SendERC20(props: SendERC20Props) {
     functionName: "transfer",
     args: [
       tokenData?.recipientAddress,
-      tokenData?.amount, // convert to wei
+      props.tokenAmount, // convert to wei
     ],
     chainId: props.chainId,
   });
