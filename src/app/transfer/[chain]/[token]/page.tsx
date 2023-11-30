@@ -25,13 +25,17 @@ import {
 import { useRouter } from "next/navigation";
 
 export default function Home({
-  params: { chain: selectedChain, token },
+  params,
 }: {
   params: {
     chain: string;
     token: string;
   };
 }) {
+  const [selectedChain, token] = [
+    decodeURIComponent(params.chain),
+    params.token,
+  ];
   const tokenName = token.substring(0, token.indexOf("_"));
   const tokenAmount = token.substring(token.indexOf("_") + 1, token.length);
 
@@ -85,17 +89,21 @@ export default function Home({
     \nfromAddress: ${address}
     \ntoAddress: ${chainsData[selectedChain]?.toAddress}`);
 
-    if (selectedNetworkId !== currentNetworkId) {
-      disconnect().then(() => {
-        if (isDisconnected) {
-          console.log("++disconnect++ Network is not same.");
-          // router.back();
-          setConnectButton(true);
-        }
-      });
-    } else if (address && selectedNetworkId && !isDisconnected) {
+    if (address && selectedNetworkId && !isDisconnected) {
       setTimeout(() => {
         if (
+          selectedNetworkId != currentNetworkId?.toString() ||
+          currentNetworkId === 1 &&
+          Number(selectedNetworkId) !== 1
+        ) {
+          disconnect().then(() => {
+            if (isDisconnected) {
+              console.log("++disconnect++ Network is not same.");
+              // router.back();
+              setConnectButton(true);
+            }
+          });
+        } else if (
           nativeCurrency[tokenName] &&
           callFunction !== "call" &&
           callFunction !== "done"
