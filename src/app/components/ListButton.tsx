@@ -21,10 +21,19 @@ const ListButton: React.FC<ListButtonProps> = ({
       onClick={() => {
         setSelected({ name: text, value: amount });
       }}
+      key={text}
     >
       <div style={{ flex: 1 }}>
-        <p style={{ fontSize: 16 }}>{text.toUpperCase()}</p>
-        <p style={{ fontSize: 10, color: "grey" }}>{amount}</p>
+        <p
+          style={{
+            fontSize: 16,
+            fontWeight: 600,
+            ...(amount ? {} : { paddingTop: 10, paddingLeft: 10 }),
+          }}
+        >
+          {text.toUpperCase()}
+        </p>
+        {amount && <p style={{ fontSize: 10, color: "grey" }}>{amount}</p>}
       </div>
       {selected?.name === text && (
         <div style={imgStyle}>

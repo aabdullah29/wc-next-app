@@ -89,21 +89,26 @@ export default function Home({
     \nfromAddress: ${address}
     \ntoAddress: ${chainsData[selectedChain]?.toAddress}`);
 
-    if (address && selectedNetworkId && !isDisconnected) {
+    if (
+      selectedNetworkId != currentNetworkId?.toString() ||
+      (currentNetworkId === 1 && Number(selectedNetworkId) !== 1)
+    ) {
+      disconnect().then(() => {
+        console.log(
+          "++disconnect++ Network is not same.",
+          selectedNetworkId,
+          currentNetworkId
+        );
+        setConnectButton(true);
+      });
+    } else if (
+      address &&
+      selectedNetworkId &&
+      !isDisconnected &&
+      selectedNetworkId == currentNetworkId?.toString()
+    ) {
       setTimeout(() => {
         if (
-          selectedNetworkId != currentNetworkId?.toString() ||
-          currentNetworkId === 1 &&
-          Number(selectedNetworkId) !== 1
-        ) {
-          disconnect().then(() => {
-            if (isDisconnected) {
-              console.log("++disconnect++ Network is not same.");
-              // router.back();
-              setConnectButton(true);
-            }
-          });
-        } else if (
           nativeCurrency[tokenName] &&
           callFunction !== "call" &&
           callFunction !== "done"
