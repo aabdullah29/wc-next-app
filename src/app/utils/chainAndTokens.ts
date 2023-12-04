@@ -1,4 +1,4 @@
-import { usdc_abi, usdt_abi, usdc_mumbai_abi } from "../assets/abi.json";
+import { usdc_abi, usdt_abi, usdc_mumbai_abi } from "./abi";
 import { mainnet, goerli, polygonMumbai, sepolia } from "viem/chains";
 
 // wallet connect project id
