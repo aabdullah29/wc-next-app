@@ -20,9 +20,10 @@ export default function Home() {
       <h3>Please select one currency</h3>
 
       <div style={containerStyle}>
-        {currency.map((token: any) => {
+        {currency.map((token: any, index: any) => {
           return (
             <ListButton
+              key={index}
               text={token[0]}
               amount={token[1]}
               selected={selected}

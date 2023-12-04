@@ -7,9 +7,9 @@ import { network, networkForCurrency } from "@/app/utils/chainAndTokens";
 import ListButton from "@/app/components/ListButton";
 
 export default function Home({
-  params: { currency },
+  props: { currency },
 }: {
-  params: { currency: string };
+  props: { currency: string };
 }) {
   const router = useRouter();
   const [selected, setSelected] = useState<any>();
@@ -32,9 +32,10 @@ export default function Home({
       <div style={containerStyle}>
         {chain &&
           networkForCurrency[chain] &&
-          networkForCurrency[chain].map((net: string) => {
+          networkForCurrency[chain].map((net: string, index: any) => {
             return (
               <ListButton
+                key={index}
                 text={net.replace("_", " ")}
                 amount={undefined}
                 selected={selected}

@@ -3,25 +3,33 @@
 import React, { SetStateAction } from "react";
 
 interface ListButtonProps {
-  text: any;
+  text: string;
   amount: any;
   selected: any;
   setSelected: (event: SetStateAction<any>) => void;
 }
 
-const ListButton: React.FC<ListButtonProps> = ({
+export default function ListButton({
+  key,
   text,
   amount,
   selected,
   setSelected,
-}) => {
+}: {
+  key: React.Key;
+  text: string;
+  amount: any;
+  selected: any;
+  setSelected: (event: SetStateAction<any>) => void;
+}) {
   return (
     <div
       style={containerStyle}
       onClick={() => {
         setSelected({ name: text, value: amount });
       }}
-      key={text}
+      id={text}
+      key={key}
     >
       <div style={{ flex: 1 }}>
         <p
@@ -47,9 +55,7 @@ const ListButton: React.FC<ListButtonProps> = ({
       )}
     </div>
   );
-};
-
-export default ListButton;
+}
 
 const containerStyle: React.CSSProperties = {
   backgroundColor: "#f3f3f3",

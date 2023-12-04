@@ -25,17 +25,14 @@ import {
 import { useRouter } from "next/navigation";
 
 export default function Home({
-  params,
+  props,
 }: {
-  params: {
+  props: {
     chain: string;
     token: string;
   };
 }) {
-  const [selectedChain, token] = [
-    decodeURIComponent(params.chain),
-    params.token,
-  ];
+  const [selectedChain, token] = [decodeURIComponent(props.chain), props.token];
   const tokenName = token.substring(0, token.indexOf("_"));
   const tokenAmount = token.substring(token.indexOf("_") + 1, token.length);
 

@@ -60,7 +60,7 @@ export const signMessage = async (
   try {
     const result = await provider!.request({
       method: "solana_signMessage",
-      params: {
+      props: {
         pubkey: senderPublicKey.toBase58(),
         message,
       },
@@ -123,7 +123,7 @@ export const sendTransaction = async (
     rawTransaction = Buffer.from(transaction.serialize()).toString("base64");
 
     if (transaction.version === "legacy") {
-      // For backwards-compatible, legacy transactions are spread in the params
+      // For backwards-compatible, legacy transactions are spread in the props
       legacyTransaction = Transaction.from(transaction.serialize());
     }
   } else {
@@ -139,7 +139,7 @@ export const sendTransaction = async (
   try {
     const result = await provider!.request({
       method: "solana_signTransaction",
-      params: {
+      props: {
         // Passing ...legacyTransaction is deprecated.
         // All new clients should rely on the `transaction` parameter.
         // The future versions will stop passing ...legacyTransaction.
