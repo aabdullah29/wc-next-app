@@ -6,10 +6,10 @@ import { useRouter } from "next/navigation";
 import { network, networkForCurrency } from "@/app/utils/chainAndTokens";
 import ListButton from "@/app/components/ListButton";
 
-export default function Home({
-  props: { currency },
+export default function SelectChain({
+  params: { currency },
 }: {
-  props: { currency: string };
+  params: { currency: string };
 }) {
   const router = useRouter();
   const [selected, setSelected] = useState<any>();

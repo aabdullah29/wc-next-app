@@ -2,13 +2,6 @@
 
 import React, { SetStateAction } from "react";
 
-interface ListButtonProps {
-  text: string;
-  amount: any;
-  selected: any;
-  setSelected: (event: SetStateAction<any>) => void;
-}
-
 export default function ListButton({
   key,
   text,
