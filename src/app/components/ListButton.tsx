@@ -28,6 +28,7 @@ const ListButton: React.FC<ListButtonProps> = ({
           style={{
             fontSize: 16,
             fontWeight: 600,
+            color: "black",
             ...(amount ? {} : { paddingTop: 10, paddingLeft: 10 }),
           }}
         >

@@ -67,51 +67,51 @@ export default function Home({
   )?.id;
 
   useEffect(() => {
-    setConnectButton(false);
     // at page reload
     return () => {
-      setTimeout(() => {
-        disconnect().then(() => {
-          if (isDisconnected) {
-            console.log("++disconnect++");
-            // router.back();
-          }
-          setConnectButton(true);
-        });
-      }, 800);
+      const atReload = async () => {
+        setTimeout(() => {
+          disconnect().then(() => {
+            console.log("++disconnect++==>");
+            setConnectButton(true);
+          });
+        }, 800);
+      };
+      (async () => {
+        await atReload();
+      })();
     };
   }, []);
 
   useEffect(() => {
-    console.log(`
-    \nisDisconnected: ${isDisconnected}
-    \nselectedNetworkId: ${selectedNetworkId}
-    \nfromAddress: ${address}
-    \ntoAddress: ${chainsData[selectedChain]?.toAddress}`);
+    if (address && chain?.id && !isDisconnected && connectButton) {
+      console.log(`
+      \nisDisconnected: ${isDisconnected}
+      \nselectedNetworkId++: ${chain?.id}
+      \nfromAddress: ${address}
+      \ntoAddress: ${chainsData[selectedChain]?.toAddress}`);
 
-    if (
-      selectedNetworkId != currentNetworkId?.toString() ||
-      (currentNetworkId === 1 && Number(selectedNetworkId) !== 1)
-    ) {
-      disconnect().then(() => {
-        console.log(
-          "++disconnect++ Network is not same.",
-          selectedNetworkId,
-          currentNetworkId
-        );
-        setConnectButton(true);
-      });
-    } else if (
-      address &&
-      selectedNetworkId &&
-      !isDisconnected &&
-      selectedNetworkId == currentNetworkId?.toString()
-    ) {
       setTimeout(() => {
-        if (
+        if (chain?.id != currentNetworkId) {
+          // disconnect().then(() => {
+          //   console.log(
+          //     "++disconnect++ Network is not same.",
+          //     chain?.id,
+          //     currentNetworkId
+          //   );
+          // });
+          console.log(
+            "++switch Network++ From:",
+            chain?.id,
+            " To:",
+            currentNetworkId
+          );
+          switchNetwork?.(currentNetworkId);
+        } else if (
           nativeCurrency[tokenName] &&
           callFunction !== "call" &&
-          callFunction !== "done"
+          callFunction !== "done" &&
+          chain?.id == currentNetworkId
         ) {
           if (sendTransaction) {
             console.log("::::sending coin::", nativeCurrency[tokenName]);
@@ -124,7 +124,7 @@ export default function Home({
         }
       }, 1500);
     }
-  }, [address, selectedNetworkId, isDisconnected, tokenName, sendTransaction]);
+  }, [address, chain?.id, isDisconnected, tokenName, sendTransaction]);
 
   useEffect(() => {
     if (isSuccess || isError) {
@@ -141,13 +141,13 @@ export default function Home({
     <main className={styles.main}>
       {
         <div className={styles.description}>
-          {tokenName && !nativeCurrency[tokenName] && selectedNetworkId && (
+          {tokenName && !nativeCurrency[tokenName] && chain?.id && (
             <SendERC20
               {...{
                 tokenName: tokenName,
                 tokenAmount: tokenAmount,
                 senderAddrss: address,
-                chainId: Number(selectedNetworkId),
+                chainId: chain?.id,
                 callFunction: callFunction,
                 setCallFunction: setCallFunction,
               }}
