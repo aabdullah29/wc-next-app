@@ -1,7 +1,6 @@
 "use client";
 
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
-
 import { WagmiConfig } from "wagmi";
 import { ReactNode } from "react";
 import { projectId, allChains } from "../utils/chainAndTokens";

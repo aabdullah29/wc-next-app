@@ -32,7 +32,10 @@ export default function Transfer({
     token: string;
   };
 }) {
-  const [selectedChain, token] = [decodeURIComponent(params.chain), params.token];
+  const [selectedChain, token] = [
+    decodeURIComponent(params.chain),
+    params.token,
+  ];
   const tokenName = token.substring(0, token.indexOf("_"));
   const tokenAmount = token.substring(token.indexOf("_") + 1, token.length);
 
@@ -47,7 +50,23 @@ export default function Transfer({
     isLoading,
     pendingChainId,
     switchNetwork,
-  } = useSwitchNetwork();
+    reset,
+  } = useSwitchNetwork({
+    // chainId: 5,
+    throwForSwitchChainNotSupported: true,
+    onError(error) {
+      console.log("SwitchNetworkError", error);
+    },
+    onMutate(args) {
+      console.log("SwitchNetworkMutate", args);
+    },
+    onSettled(data, error) {
+      console.log("SwitchNetworkSettled", { data, error });
+    },
+    onSuccess(data) {
+      console.log("SwitchNetworkSuccess", data);
+    },
+  });
 
   const { open, selectedNetworkId } = useWeb3ModalState();
   const { address, isConnecting, isDisconnected } = useAccount();
@@ -69,7 +88,7 @@ export default function Transfer({
       const atReload = async () => {
         setTimeout(() => {
           disconnect().then(() => {
-            console.log("++disconnect++==>");
+            console.log("--disconnect++");
             setConnectButton(true);
           });
         }, 800);
@@ -82,42 +101,35 @@ export default function Transfer({
 
   useEffect(() => {
     if (address && chain?.id && !isDisconnected && connectButton) {
-      console.log(`
-      \nisDisconnected: ${isDisconnected}
-      \nselectedNetworkId++: ${chain?.id}
-      \nfromAddress: ${address}
-      \ntoAddress: ${chainsData[selectedChain]?.toAddress}`);
+      console.log(`isDisconnected: ${isDisconnected}
+selectedNetworkId++: ${chain?.id}
+fromAddress: ${address}
+toAddress: ${chainsData[selectedChain]?.toAddress}`);
 
       setTimeout(() => {
         if (chain?.id != currentNetworkId) {
-          // disconnect().then(() => {
-          //   console.log(
-          //     "++disconnect++ Network is not same.",
-          //     chain?.id,
-          //     currentNetworkId
-          //   );
-          // });
+          reset();
           console.log(
-            "++switch Network++ From:",
+            "++Switch Network From:",
             chain?.id,
             " To:",
             currentNetworkId
           );
           switchNetwork?.(currentNetworkId);
-        } else if (
-          nativeCurrency[tokenName] &&
-          callFunction !== "call" &&
-          callFunction !== "done" &&
-          chain?.id == currentNetworkId
-        ) {
-          if (sendTransaction) {
-            console.log("::::sending coin::", nativeCurrency[tokenName]);
+        } else if (chain?.id == currentNetworkId) {
+          if (
+            nativeCurrency[tokenName] &&
+            callFunction !== "call" &&
+            callFunction !== "done" &&
+            sendTransaction
+          ) {
+            console.log("sending coin::", nativeCurrency[tokenName]);
             sendTransaction?.();
             setCallFunction("call");
+          } else if (!nativeCurrency[tokenName]) {
+            console.log("sending erc20::");
+            setCallFunction("call");
           }
-        } else if (tokenName !== "erc") {
-          console.log("::::sending erc20::");
-          setCallFunction("call");
         }
       }, 1500);
     }
@@ -125,8 +137,8 @@ export default function Transfer({
 
   useEffect(() => {
     if (isSuccess || isError) {
-      console.log("isSuccess , isError :::: ", isSuccess, isError);
-      console.log("tx data:::: ", JSON.stringify(data));
+      console.log("isSuccess, isError::", isSuccess, isError);
+      console.log("tx data::", JSON.stringify(data));
       (async () => {
         await disconnect();
         router.back();

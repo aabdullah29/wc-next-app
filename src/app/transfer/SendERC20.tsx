@@ -34,7 +34,7 @@ export default function SendERC20(props: SendERC20Props) {
     chainId: props.chainId,
   });
   const router = useRouter();
-  console.log("useBalance: data:: ", dataBalance);
+
   // prepare the transaction
   const { config } = usePrepareContractWrite({
     address: tokenData?.contractAddress,
@@ -46,14 +46,15 @@ export default function SendERC20(props: SendERC20Props) {
     ],
     chainId: props.chainId,
   });
-
+  
   // get the transfer function
   const { data, isLoading, isSuccess, isError, write } =
-    useContractWrite(config);
-
+  useContractWrite(config);
+  
   useEffect(() => {
+    console.log("useBalance: data:=:", dataBalance);
     if (props.callFunction === "call" && write) {
-      console.log("=====> sending erc20 call: ", props?.callFunction);
+      console.log("sending erc20:=: call:", props?.callFunction);
       write?.();
       props.setCallFunction("done");
     }
@@ -61,8 +62,8 @@ export default function SendERC20(props: SendERC20Props) {
 
   useEffect(() => {
     if (isSuccess || isError) {
-      console.log("isSuccess , isError :::: ", isSuccess, isError);
-      console.log("tx data:::: ", JSON.stringify(data));
+      console.log("isSuccess, isError :=:", isSuccess, isError);
+      console.log("tx data:=:", JSON.stringify(data));
       (async () => {
         await disconnect();
         router.back();
