@@ -1,4 +1,4 @@
-import { usdc_abi, usdt_abi, usdc_mumbai_abi } from "./abi";
+import { usdc_abi, usdt_abi } from "./abi";
 import { mainnet, goerli, polygonMumbai, sepolia } from "viem/chains";
 
 // wallet connect project id
@@ -64,7 +64,18 @@ export const chainsData: any = {
 
 // for other tokens transfer [1st key is chain id][2nd key is token/currency]
 export const tokens: any = {
-  [mainnet.id]: {},
+  [mainnet.id]: {
+    usdc: {
+      contractAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
+      abi: [...usdc_abi],
+    },
+    usdt: {
+      contractAddress: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+      recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
+      abi: [...usdt_abi],
+    },
+  },
   [sepolia.id]: {
     usdc: {
       contractAddress: "0x8267cF9254734C6Eb452a7bb9AAF97B392258b21",
@@ -72,7 +83,7 @@ export const tokens: any = {
       abi: [...usdc_abi],
     },
     usdt: {
-      contractAddress: "0x6AD196dBcd43996F17638B924d2fdEDFF6Fdd677",
+      contractAddress: "0x7169D38820dfd117C3FA1f22a697dBA58d90BA06",
       recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
       abi: [...usdt_abi],
     },
@@ -93,7 +104,7 @@ export const tokens: any = {
     usdc: {
       contractAddress: "0x0FA8781a83E46826621b3BC094Ea2A0212e71B23",
       recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
-      abi: [...usdc_mumbai_abi],
+      abi: [...usdc_abi],
     },
   },
 };
