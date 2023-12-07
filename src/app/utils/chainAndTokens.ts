@@ -67,7 +67,7 @@ export const tokens: any = {
   [mainnet.id]: {},
   [sepolia.id]: {
     usdc: {
-      contractAddress: "0x07865c6E87B9F70255377e024ace6630C1Eaa37F",
+      contractAddress: "0x8267cF9254734C6Eb452a7bb9AAF97B392258b21",
       recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
       abi: [...usdc_abi],
     },

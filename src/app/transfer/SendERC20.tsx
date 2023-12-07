@@ -1,10 +1,11 @@
 "use client";
 
 import { useContractWrite, usePrepareContractWrite, useBalance } from "wagmi";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { disconnect } from "@wagmi/core";
 import { tokens } from "../utils/chainAndTokens";
 import { useRouter } from "next/navigation";
+import CustomModal from "../components/CustomModal";
 
 export interface SendERC20Props {
   tokenName: string;
@@ -34,9 +35,13 @@ export default function SendERC20(props: SendERC20Props) {
     chainId: props.chainId,
   });
   const router = useRouter();
+  const [modal, setModal] = useState<any>();
+  const handleCloseModal = () => {
+    setModal(undefined);
+  };
 
   // prepare the transaction
-  const { config } = usePrepareContractWrite({
+  const { config, error } = usePrepareContractWrite({
     address: tokenData?.contractAddress,
     abi: tokenData?.abi,
     functionName: "transfer",
@@ -52,13 +57,20 @@ export default function SendERC20(props: SendERC20Props) {
   useContractWrite(config);
   
   useEffect(() => {
+    setModal(undefined);
     console.log("useBalance: data:=:", dataBalance);
+    if(error && dataBalance?.formatted && Number(dataBalance?.formatted) <= 0 ){
+      setModal({
+        name: `Error Type: transferAmountExceedsBalance`,
+        message: "You don't have enough tokens for this transaction.",
+      });
+    }else 
     if (props.callFunction === "call" && write) {
       console.log("sending erc20:=: call:", props?.callFunction);
       write?.();
       props.setCallFunction("done");
     }
-  }, [props.callFunction, write]);
+  }, [props.callFunction, write, dataBalance]);
 
   useEffect(() => {
     if (isSuccess || isError) {
@@ -72,6 +84,10 @@ export default function SendERC20(props: SendERC20Props) {
   }, [isSuccess, isError]);
 
   return (
+    <CustomModal isOpen={modal} onClose={handleCloseModal}>
+    <h2>{modal?.name}</h2>
+    <p style={{ marginTop: 20 }}>{modal?.message}</p>
+  </CustomModal>
     // <div>
     //   <button disabled={!write} onClick={() => write?.()}>
     //     Transfer
@@ -79,6 +95,5 @@ export default function SendERC20(props: SendERC20Props) {
     //   {isLoading && <div>Check Wallet</div>}
     //   {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
     // </div>
-    <></>
   );
 }

@@ -4,25 +4,15 @@ import styles from "../../../page.module.css";
 import { useWeb3Modal, useWeb3ModalState } from "@web3modal/wagmi/react";
 import {
   useAccount,
-  usePrepareSendTransaction,
-  useSendTransaction,
-  useToken,
-  useBalance,
-  useContractWrite,
-  usePrepareContractWrite,
   useNetwork,
   useSwitchNetwork,
 } from "wagmi";
 import { useEffect, useState } from "react";
-import { parseEther } from "viem";
 import SendERC20 from "../../SendERC20";
 import { disconnect } from "@wagmi/core";
-import {
-  nativeCurrency,
-  chainsData,
-  allChains,
-} from "../../../utils/chainAndTokens";
+import { nativeCurrency, allChains } from "../../../utils/chainAndTokens";
 import { useRouter } from "next/navigation";
+import SendNativeCurrency from "../../SendNativeCurrency";
 
 export default function Transfer({
   params,
@@ -68,15 +58,7 @@ export default function Transfer({
     },
   });
 
-  const { open, selectedNetworkId } = useWeb3ModalState();
   const { address, isConnecting, isDisconnected } = useAccount();
-
-  const { config, error } = usePrepareSendTransaction({
-    to: chainsData[selectedChain]?.toAddress,
-    value: parseEther(tokenAmount),
-  });
-  const { sendTransaction, isSuccess, data, isError } =
-    useSendTransaction(config);
 
   const currentNetworkId = allChains.find(
     (chain) => selectedChain === chain.name
@@ -102,9 +84,8 @@ export default function Transfer({
   useEffect(() => {
     if (address && chain?.id && !isDisconnected && connectButton) {
       console.log(`isDisconnected: ${isDisconnected}
-selectedNetworkId++: ${chain?.id}
-fromAddress: ${address}
-toAddress: ${chainsData[selectedChain]?.toAddress}`);
+      selectedNetworkId++: ${chain?.id}
+      fromAddress: ${address}`);
 
       setTimeout(() => {
         if (chain?.id != currentNetworkId) {
@@ -120,11 +101,9 @@ toAddress: ${chainsData[selectedChain]?.toAddress}`);
           if (
             nativeCurrency[tokenName] &&
             callFunction !== "call" &&
-            callFunction !== "done" &&
-            sendTransaction
+            callFunction !== "done"
           ) {
-            console.log("sending coin::", nativeCurrency[tokenName]);
-            sendTransaction?.();
+            console.log("sending currency::", nativeCurrency[tokenName]);
             setCallFunction("call");
           } else if (!nativeCurrency[tokenName]) {
             console.log("sending erc20::");
@@ -133,23 +112,26 @@ toAddress: ${chainsData[selectedChain]?.toAddress}`);
         }
       }, 1500);
     }
-  }, [address, chain?.id, isDisconnected, tokenName, sendTransaction]);
-
-  useEffect(() => {
-    if (isSuccess || isError) {
-      console.log("isSuccess, isError::", isSuccess, isError);
-      console.log("tx data::", JSON.stringify(data));
-      (async () => {
-        await disconnect();
-        router.back();
-      })();
-    }
-  }, [isSuccess, isError, callFunction]);
+  }, [address, chain?.id, isDisconnected, tokenName]);
 
   return (
     <main className={styles.main}>
       {
         <div className={styles.description}>
+          {/* for Native Currency */}
+          {tokenName && nativeCurrency[tokenName] && chain?.id && (
+            <SendNativeCurrency
+              {...{
+                selectedChain: selectedChain,
+                amount: tokenAmount,
+                senderAddrss: address,
+                chainId: chain?.id,
+                callFunction: callFunction,
+                setCallFunction: setCallFunction,
+              }}
+            />
+          )}
+          {/* for ERC20 Tokens */}
           {tokenName && !nativeCurrency[tokenName] && chain?.id && (
             <SendERC20
               {...{
