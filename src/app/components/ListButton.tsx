@@ -3,13 +3,11 @@
 import React, { SetStateAction } from "react";
 
 export default function ListButton({
-  key,
   text,
   amount,
   selected,
   setSelected,
 }: {
-  key: React.Key;
   text: string;
   amount: any;
   selected: any;
@@ -22,7 +20,6 @@ export default function ListButton({
         setSelected({ name: text, value: amount });
       }}
       id={text}
-      key={key}
     >
       <div style={{ flex: 1 }}>
         <p
