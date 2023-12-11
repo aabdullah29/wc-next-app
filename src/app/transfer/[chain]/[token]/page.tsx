@@ -2,11 +2,7 @@
 
 import styles from "../../../page.module.css";
 import { useWeb3Modal, useWeb3ModalState } from "@web3modal/wagmi/react";
-import {
-  useAccount,
-  useNetwork,
-  useSwitchNetwork,
-} from "wagmi";
+import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 import { useEffect, useState } from "react";
 import SendERC20 from "../../SendERC20";
 import { disconnect } from "@wagmi/core";
@@ -64,6 +60,10 @@ export default function Transfer({
     (chain) => selectedChain === chain.name
   )?.id;
 
+  const isNetworkSame = (net: any) => {
+    return net ? net === currentNetworkId : false;
+  };
+
   useEffect(() => {
     // at page reload
     return () => {
@@ -88,7 +88,7 @@ export default function Transfer({
       fromAddress: ${address}`);
 
       setTimeout(() => {
-        if (chain?.id != currentNetworkId) {
+        if (!isNetworkSame(chain?.id)) {
           reset();
           console.log(
             "++Switch Network From:",
@@ -119,31 +119,37 @@ export default function Transfer({
       {
         <div className={styles.description}>
           {/* for Native Currency */}
-          {tokenName && nativeCurrency[tokenName] && chain?.id && (
-            <SendNativeCurrency
-              {...{
-                selectedChain: selectedChain,
-                amount: tokenAmount,
-                senderAddrss: address,
-                chainId: chain?.id,
-                callFunction: callFunction,
-                setCallFunction: setCallFunction,
-              }}
-            />
-          )}
+          {connectButton &&
+            tokenName &&
+            nativeCurrency[tokenName] &&
+            isNetworkSame(chain?.id) && (
+              <SendNativeCurrency
+                {...{
+                  selectedChain: selectedChain,
+                  amount: tokenAmount,
+                  senderAddrss: address,
+                  chainId: chain?.id!,
+                  callFunction: callFunction,
+                  setCallFunction: setCallFunction,
+                }}
+              />
+            )}
           {/* for ERC20 Tokens */}
-          {tokenName && !nativeCurrency[tokenName] && chain?.id && (
-            <SendERC20
-              {...{
-                tokenName: tokenName,
-                tokenAmount: tokenAmount,
-                senderAddrss: address,
-                chainId: chain?.id,
-                callFunction: callFunction,
-                setCallFunction: setCallFunction,
-              }}
-            />
-          )}
+          {connectButton &&
+            tokenName &&
+            !nativeCurrency[tokenName] &&
+            isNetworkSame(chain?.id) && (
+              <SendERC20
+                {...{
+                  tokenName: tokenName,
+                  tokenAmount: tokenAmount,
+                  senderAddrss: address,
+                  chainId: chain?.id!,
+                  callFunction: callFunction,
+                  setCallFunction: setCallFunction,
+                }}
+              />
+            )}
         </div>
       }
 

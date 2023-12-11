@@ -51,26 +51,29 @@ export default function SendERC20(props: SendERC20Props) {
     ],
     chainId: props.chainId,
   });
-  
+
   // get the transfer function
   const { data, isLoading, isSuccess, isError, write } =
-  useContractWrite(config);
-  
+    useContractWrite(config);
+
   useEffect(() => {
     setModal(undefined);
     console.log("useBalance: data:=:", dataBalance);
-    if(error && dataBalance?.formatted && Number(dataBalance?.formatted) <= 0 ){
+    if (
+      error?.name === "EstimateGasExecutionError" &&
+      dataBalance?.formatted &&
+      Number(dataBalance?.formatted) <= 0
+    ) {
       setModal({
         name: `Error Type: transferAmountExceedsBalance`,
         message: "You don't have enough tokens for this transaction.",
       });
-    }else 
-    if (props.callFunction === "call" && write) {
+    } else if (props.callFunction === "call" && write) {
       console.log("sending erc20:=: call:", props?.callFunction);
       write?.();
       props.setCallFunction("done");
     }
-  }, [props.callFunction, write, dataBalance]);
+  }, [props.callFunction, write]);
 
   useEffect(() => {
     if (isSuccess || isError) {
@@ -85,9 +88,9 @@ export default function SendERC20(props: SendERC20Props) {
 
   return (
     <CustomModal isOpen={modal} onClose={handleCloseModal}>
-    <h2>{modal?.name}</h2>
-    <p style={{ marginTop: 20 }}>{modal?.message}</p>
-  </CustomModal>
+      <h2>{modal?.name}</h2>
+      <p style={{ marginTop: 20 }}>{modal?.message}</p>
+    </CustomModal>
     // <div>
     //   <button disabled={!write} onClick={() => write?.()}>
     //     Transfer
