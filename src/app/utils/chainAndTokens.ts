@@ -1,16 +1,17 @@
 import { usdc_abi, usdt_abi } from "./abi";
-import { mainnet, goerli, polygonMumbai, sepolia } from "viem/chains";
+import { mainnet, goerli, polygonMumbai, sepolia, fantomTestnet } from "viem/chains";
 
 // wallet connect project id
 export const projectId: string = "0854ce5ff73158f88d93e8f047ff33d7";
 
 // all chains
-export const allChains = [mainnet, goerli, sepolia, polygonMumbai];
+export const allChains = [mainnet, goerli, sepolia, polygonMumbai, fantomTestnet];
 export const network = {
   ethereum: mainnet.name,
   goerli: goerli.name,
   sepolia: sepolia.name,
   polygon_mumbai: polygonMumbai.name,
+  fantomTestnet: fantomTestnet.name,
   solana: "solana",
 };
 
@@ -19,7 +20,9 @@ export const currency: any = [
   ["eth", "0.0001"],
   ["usdc", 10000000],
   ["usdt", 2000000],
+  ["myusdt", 10000000],
   ["matic", "0.0001"],
+  ["fmt", "0.0001"],
   ["sol", 1000000],
 ];
 
@@ -33,7 +36,9 @@ export const networkForCurrency: any = {
     network.sepolia,
   ],
   usdt: [network.ethereum, network.goerli, network.sepolia],
+  myusdt: [network.goerli, network.sepolia, network.polygon_mumbai, network.fantomTestnet],
   matic: [network.polygon_mumbai],
+  fmt: [network.fantomTestnet],
   sol: [network.solana],
 };
 
@@ -41,6 +46,7 @@ export const networkForCurrency: any = {
 export const nativeCurrency: any = {
   eth: true,
   matic: true,
+  fmt: true,
 };
 
 // for native currensy transfer
@@ -55,6 +61,9 @@ export const chainsData: any = {
     toAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
   },
   [network.polygon_mumbai]: {
+    toAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
+  },
+  [network.fantomTestnet]: {
     toAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
   },
   [network.solana]: {
@@ -87,6 +96,11 @@ export const tokens: any = {
       recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
       abi: [...usdt_abi],
     },
+    myusdt: {
+      contractAddress: "0x276404e46d9ba8f146f968cb85016276a82b2688",
+      recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
+      abi: [...usdt_abi],
+    },
   },
   [goerli.id]: {
     usdc: {
@@ -99,10 +113,27 @@ export const tokens: any = {
       recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
       abi: [...usdt_abi],
     },
+    myusdt: {
+      contractAddress: "0x7b13fcda19d28a80b5635cf38526b52d11baadae",
+      recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
+      abi: [...usdt_abi],
+    },
   },
   [polygonMumbai.id]: {
     usdc: {
       contractAddress: "0x0FA8781a83E46826621b3BC094Ea2A0212e71B23",
+      recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
+      abi: [...usdc_abi],
+    },
+    myusdt: {
+      contractAddress: "0x8b879ae3f205d94e8b9e32bca553654d0e8128af",
+      recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
+      abi: [...usdc_abi],
+    },
+  },
+  [fantomTestnet.id]: {
+    myusdt: {
+      contractAddress: "0x8b879ae3f205d94e8b9e32bca553654d0e8128af",
       recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
       abi: [...usdc_abi],
     },
