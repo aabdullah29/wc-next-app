@@ -95,7 +95,7 @@ export const tokens: any = {
       abi: [...usdc_abi],
     },
     usdt: {
-      contractAddress: "0x6AD196dBcd43996F17638B924d2fdEDFF6Fdd677",
+      contractAddress: "0xC2C527C0CACF457746Bd31B2a698Fe89de2b6d49",
       recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
       abi: [...usdt_abi],
     },
