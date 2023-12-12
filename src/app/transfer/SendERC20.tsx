@@ -37,7 +37,10 @@ export default function SendERC20(props: SendERC20Props) {
   const router = useRouter();
   const [modal, setModal] = useState<any>();
   const handleCloseModal = () => {
-    setModal(undefined);
+    disconnect().then(()=>{
+      setModal(undefined);
+      router.back();
+    })
   };
 
   // prepare the transaction
@@ -60,9 +63,8 @@ export default function SendERC20(props: SendERC20Props) {
     setModal(undefined);
     console.log("useBalance: data:=:", dataBalance);
     if (
-      error &&
-      dataBalance?.formatted &&
-      Number(dataBalance?.formatted) <= 0
+      (error || isErrorBalance) &&
+      Number(dataBalance?.formatted ?? 0) <= 0
     ) {
       setModal({
         name: `Error Type: transferAmountExceedsBalance`,

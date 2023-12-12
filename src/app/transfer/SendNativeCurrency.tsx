@@ -35,7 +35,10 @@ export default function SendNativeCurrency(props: SendERC20Props) {
   const router = useRouter();
   const [modal, setModal] = useState<any>();
   const handleCloseModal = () => {
-    setModal(undefined);
+    disconnect().then(()=>{
+      setModal(undefined);
+      router.back();
+    })
   };
 
   // prepare the transaction
@@ -49,7 +52,7 @@ export default function SendNativeCurrency(props: SendERC20Props) {
 
   useEffect(() => {
     console.log("useBalance: data:=:", dataBalance);
-    if (error?.name === "EstimateGasExecutionError") {
+    if (error?.name === "EstimateGasExecutionError" || isErrorBalance) {
       setModal({
         name: `Error Type: ${error?.name}`,
         message: "You don't have enough balance for this transaction.",
