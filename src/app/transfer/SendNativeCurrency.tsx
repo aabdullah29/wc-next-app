@@ -11,6 +11,7 @@ import { chainsData, tokens } from "../utils/chainAndTokens";
 import { useRouter } from "next/navigation";
 import { parseEther } from "viem";
 import CustomModal from "../components/CustomModal";
+import WaitForTransaction from "./WaitForTransaction";
 
 export interface SendERC20Props {
   selectedChain: string;
@@ -35,10 +36,10 @@ export default function SendNativeCurrency(props: SendERC20Props) {
   const router = useRouter();
   const [modal, setModal] = useState<any>();
   const handleCloseModal = () => {
-    disconnect().then(()=>{
+    disconnect().then(() => {
       setModal(undefined);
       router.back();
-    })
+    });
   };
 
   // prepare the transaction
@@ -57,30 +58,23 @@ export default function SendNativeCurrency(props: SendERC20Props) {
         name: `Error Type: ${error?.name}`,
         message: "You don't have enough balance for this transaction.",
       });
-    }
-    else if (props.callFunction === "call" && sendTransaction) {
+    } else if (props.callFunction === "call" && sendTransaction) {
       console.log("sending native currency:=: call:", props?.callFunction);
       sendTransaction?.();
       props.setCallFunction("done");
     }
   }, [props.callFunction, sendTransaction, error?.name]);
 
-  useEffect(() => {
-    if (isSuccess || isError) {
-      console.log("isSuccess, isError::", isSuccess, isError);
-      console.log("tx data::", JSON.stringify(data));
-      (async () => {
-        await disconnect();
-        router.back();
-      })();
-    }
-  }, [isSuccess, isError]);
+  
 
   return (
-    <CustomModal isOpen={modal} onClose={handleCloseModal}>
-      <h2>{modal?.name}</h2>
-      <p style={{ marginTop: 20 }}>{modal?.message}</p>
-    </CustomModal>
+    <>
+      {data?.hash && <WaitForTransaction txh={data.hash} chainId={props.chainId} />}
+      <CustomModal isOpen={modal} onClose={handleCloseModal}>
+        <h2>{modal?.name}</h2>
+        <p style={{ marginTop: 20 }}>{modal?.message}</p>
+      </CustomModal>
+    </>
     // <div>
     //   <button disabled={!write} onClick={() => write?.()}>
     //     Transfer
