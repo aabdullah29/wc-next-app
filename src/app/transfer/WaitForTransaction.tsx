@@ -28,11 +28,14 @@ export default function WaitForTransaction(props: WaitForTransactionProps) {
     hash: props.txh,
     onSuccess(data) {
       console.log("Success", data);
+      const status = `${data.from === data.to ? "cancel" : data.status}`;
       setModal({
-        name: `Status: ${data.status}`,
+        name: `Status: ${status}`,
         message:
-          data.status === "success"
+          status === "success"
             ? "Transaction has been sueecssfuly completed."
+            : status === "cancel"
+            ? "Transaction has been canceled by user. "
             : "Transaction has been reverted.",
       });
     },
@@ -48,10 +51,9 @@ export default function WaitForTransaction(props: WaitForTransactionProps) {
     },
   });
 
-
   return (
     <>
-      <h4 style={{ width: "100%", textAlign: "center" }}>
+      <h4 style={{ width: "100%", textAlign: "center", color: "black" }}>
         Wait for transaction complete...
       </h4>
       <CustomModal isOpen={modal} onClose={handleCloseModal}>
