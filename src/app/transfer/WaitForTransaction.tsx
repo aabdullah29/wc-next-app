@@ -1,9 +1,8 @@
 "use client";
 
 import { useWaitForTransaction } from "wagmi";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useState } from "react";
 import { disconnect } from "@wagmi/core";
-import { chainsData, tokens } from "../utils/chainAndTokens";
 import { useRouter } from "next/navigation";
 import CustomModal from "../components/CustomModal";
 
