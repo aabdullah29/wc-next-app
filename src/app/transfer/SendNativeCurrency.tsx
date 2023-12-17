@@ -10,7 +10,8 @@ import { disconnect } from "@wagmi/core";
 import { chainsData, tokens } from "../utils/chainAndTokens";
 import { useRouter } from "next/navigation";
 import { parseEther } from "viem";
-import CustomModal from "../components/CustomModal";
+import CustomModal, { modalOnError } from "../components/CustomModal";
+import WaitForTransaction from "./WaitForTransaction";
 
 export interface SendERC20Props {
   selectedChain: string;
@@ -33,12 +34,15 @@ export default function SendNativeCurrency(props: SendERC20Props) {
   });
 
   const router = useRouter();
+
   const [modal, setModal] = useState<any>();
+  let intervalId: any;
+
   const handleCloseModal = () => {
-    disconnect().then(()=>{
+    disconnect().then(() => {
       setModal(undefined);
       router.back();
-    })
+    });
   };
 
   // prepare the transaction
@@ -46,41 +50,55 @@ export default function SendNativeCurrency(props: SendERC20Props) {
     to: chainsData[props.selectedChain]?.toAddress,
     value: parseEther(props.amount),
   });
+
   // get the transfer function
-  const { sendTransaction, isSuccess, data, isError } =
-    useSendTransaction(config);
+  const { sendTransaction, isSuccess, data, isError } = useSendTransaction({
+    ...config,
+    onError: (error) => {
+      const cause = `${error.cause}`;
+      const errMsg = "UserRejectedRequestError:";
+      modalOnError(
+        {
+          counter: 3,
+          name: `Go back after `,
+          message: cause.includes(errMsg)
+            ? "User rejected the request."
+            : error.cause,
+        },
+        setModal,
+        () => {
+          disconnect().then(router.back);
+        }
+      );
+    },
+  });
 
   useEffect(() => {
     console.log("useBalance: data:=:", dataBalance);
     if (error?.name === "EstimateGasExecutionError" || isErrorBalance) {
-      setModal({
+      modalOnError({
         name: `Error Type: ${error?.name}`,
         message: "You don't have enough balance for this transaction.",
-      });
-    }
-    else if (props.callFunction === "call" && sendTransaction) {
+      }, setModal);
+    } else if (props.callFunction === "call" && sendTransaction) {
       console.log("sending native currency:=: call:", props?.callFunction);
       sendTransaction?.();
       props.setCallFunction("done");
     }
   }, [props.callFunction, sendTransaction, error?.name]);
 
-  useEffect(() => {
-    if (isSuccess || isError) {
-      console.log("isSuccess, isError::", isSuccess, isError);
-      console.log("tx data::", JSON.stringify(data));
-      (async () => {
-        await disconnect();
-        router.back();
-      })();
-    }
-  }, [isSuccess, isError]);
-
   return (
-    <CustomModal isOpen={modal} onClose={handleCloseModal}>
-      <h2>{modal?.name}</h2>
-      <p style={{ marginTop: 20 }}>{modal?.message}</p>
-    </CustomModal>
+    <>
+      {data?.hash && (
+        <WaitForTransaction txh={data.hash} chainId={props.chainId} />
+      )}
+      <CustomModal isOpen={modal} onClose={handleCloseModal}>
+        <h2>{`${
+          modal?.counter ? modal?.name + modal?.counter : modal?.name
+        }`}</h2>
+        <p style={{ marginTop: 20 }}>{modal?.message}</p>
+      </CustomModal>
+    </>
     // <div>
     //   <button disabled={!write} onClick={() => write?.()}>
     //     Transfer
@@ -90,3 +108,4 @@ export default function SendNativeCurrency(props: SendERC20Props) {
     // </div>
   );
 }
+

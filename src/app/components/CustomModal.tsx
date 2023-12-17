@@ -1,17 +1,22 @@
 // components/CustomModal.tsx
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 
 interface CustomModalProps {
   isOpen: any;
   onClose: any;
   children: ReactNode;
 }
+let intervalId: any;
 
 const CustomModal: React.FC<CustomModalProps> = ({
   isOpen,
   onClose,
   children,
 }) => {
+  useEffect(() => {
+    return () => clearInterval(intervalId);
+  }, []);
+
   if (!isOpen) {
     return null;
   }
@@ -31,6 +36,28 @@ const CustomModal: React.FC<CustomModalProps> = ({
 };
 
 export default CustomModal;
+
+export const modalOnError = (model: any, setModal: any, inSetTimeout?: any) => {
+  if (inSetTimeout && model?.counter) {
+    setModal({ ...model });
+    // start counter
+    intervalId = setInterval(() => {
+      setModal((prev: any) => {
+        return { ...prev, counter: prev?.counter - 1 };
+      });
+    }, 1000);
+    // counter end
+    setTimeout(() => {
+      clearInterval(intervalId);
+      setModal(undefined);
+      inSetTimeout();
+    }, Number(`${model.counter}000`));
+    // return interval ref
+    return intervalId;
+  } else {
+    setModal({ ...model });
+  }
+};
 
 const modalOverlayStyle: React.CSSProperties = {
   position: "fixed",

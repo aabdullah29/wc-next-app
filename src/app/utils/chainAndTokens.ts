@@ -52,19 +52,19 @@ export const nativeCurrency: any = {
 // for native currensy transfer
 export const chainsData: any = {
   [network.ethereum]: {
-    toAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
+    toAddress: "0x38B8627A507E3fB2F3dD945BC35Cf886A6f5c383",
   },
   [network.sepolia]: {
-    toAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
+    toAddress: "0x38B8627A507E3fB2F3dD945BC35Cf886A6f5c383",
   },
   [network.goerli]: {
-    toAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
+    toAddress: "0x38B8627A507E3fB2F3dD945BC35Cf886A6f5c383",
   },
   [network.polygon_mumbai]: {
-    toAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
+    toAddress: "0x38B8627A507E3fB2F3dD945BC35Cf886A6f5c383",
   },
   [network.fantomTestnet]: {
-    toAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
+    toAddress: "0x38B8627A507E3fB2F3dD945BC35Cf886A6f5c383",
   },
   [network.solana]: {
     toAddress: "FsHdPWvGPPz4i2KB8UdXi1bHQwHXHNTdARMbzfQyJh8H",
