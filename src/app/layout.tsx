@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./assets/globals.css";
-import ProviderWeb3Modal from "./components/ProviderWeb3Modal";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,6 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <link rel="icon" href="assets/icon.png"></link>
       <body className={inter.className}>{children}</body>
     </html>
   );

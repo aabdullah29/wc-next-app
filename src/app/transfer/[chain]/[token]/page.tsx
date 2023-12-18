@@ -156,7 +156,7 @@ export default function Transfer({
       <div className={styles.description}></div>
       <div className={styles.center}>
         {tokenName && connectButton && (
-          <w3m-button balance={"show"} size={"md"}></w3m-button>
+          <w3m-button balance={"show"} size={"md"} label={"Pay"}></w3m-button>
         )}
         {/* {
           <button

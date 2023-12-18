@@ -11,8 +11,8 @@ import { projectId, allChains } from "../utils/chainAndTokens";
 const metadata = {
   name: "LocalHostWeb3Modal",
   description: "Web3Modal Localhost Wallet Connect Example",
-  url: "http://localhost:3000",
-  icons: ["https://avatars.githubusercontent.com/u/37784886"],
+  url: "https://htb.optimusfox.org/dashboard",
+  icons: ["assets/icon.pmg"],
 };
 
 const wagmiConfig = defaultWagmiConfig({
