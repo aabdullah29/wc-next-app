@@ -7,6 +7,7 @@ interface CustomModalProps {
   children: ReactNode;
 }
 let intervalId: any;
+let inSetTimeout: any;
 
 const CustomModal: React.FC<CustomModalProps> = ({
   isOpen,
@@ -14,9 +15,14 @@ const CustomModal: React.FC<CustomModalProps> = ({
   children,
 }) => {
   useEffect(() => {
-    return () => clearInterval(intervalId);
+    return () => {clearInterval(intervalId);}
   }, []);
 
+  const closeHandle = ()=>{
+    inSetTimeout = null;
+    clearInterval(intervalId);
+    onClose();
+  }
   if (!isOpen) {
     return null;
   }
@@ -26,7 +32,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
       <div style={modalStyle}>
         <div style={modalContentStyle}>{children}</div>
         <div style={btnWraperStyle}>
-          <button style={closeBtnStyle} onClick={onClose}>
+          <button style={closeBtnStyle} onClick={closeHandle}>
             Close
           </button>
         </div>
@@ -37,8 +43,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
 
 export default CustomModal;
 
-export const modalOnError = (model: any, setModal: any, inSetTimeout?: any) => {
-  if (inSetTimeout && model?.counter) {
+export const modalOnError = (model: any, setModal: any, _inSetTimeout?: any) => {
+  if (_inSetTimeout && model?.counter) {
+    inSetTimeout = _inSetTimeout;
     setModal({ ...model });
     // start counter
     intervalId = setInterval(() => {
@@ -50,7 +57,7 @@ export const modalOnError = (model: any, setModal: any, inSetTimeout?: any) => {
     setTimeout(() => {
       clearInterval(intervalId);
       setModal(undefined);
-      inSetTimeout();
+      inSetTimeout && inSetTimeout();
     }, Number(`${model.counter}000`));
     // return interval ref
     return intervalId;
