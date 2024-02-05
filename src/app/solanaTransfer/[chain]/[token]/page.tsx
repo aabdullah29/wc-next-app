@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import styles from "./../page.module.css";
+import styles from "./../../../page.module.css";
 import UniversalProvider from "@walletconnect/universal-provider";
 import { WalletConnectModal } from "@walletconnect/modal";
 import {
-  signMessage,
+  // signMessage,
   sendTransaction,
   SolanaChains,
-} from "./../utils/solanaHelpers";
-import { chainsData, projectId } from "../utils/chainAndTokens";
-import Button from "../components/Button";
+} from "../../../utils/solanaHelpers";
+import { chainsData, projectId } from "../../../utils/chainAndTokens";
+import Button from "../../../components/Button";
 
 const events: string[] = [];
 
@@ -27,15 +27,26 @@ const modal = new WalletConnectModal({
   chains,
 });
 
-export default function Home() {
+export default function Home({
+  params,
+}: {
+  params: {
+    chain: string;
+    token: string;
+  };
+}) {
+  const [selectedChain, token] = [
+    decodeURIComponent(params.chain),
+    params.token,
+  ];
+  const tokenName = token.substring(0, token.indexOf("_"));
+  const tokenAmount = token.substring(token.indexOf("_") + 1, token.length);
+
   const router = useRouter();
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState("");
 
-  const [toAddress, amount] = [
-    chainsData["solana"]?.toAddress,
-    chainsData["solana"]?.amount,
-  ];
+  const toAddress = chainsData["solana"]?.toAddress;
 
   // 4. create provider instance
   async function getProvider() {
@@ -112,10 +123,29 @@ export default function Home() {
   // };
 
   const handleSend = async () => {
-    console.log("sendTx");
     const provider = await getProvider();
-    const res = await sendTransaction(toAddress!, amount, provider, address!);
-    console.log("res: ", res);
+    console.log("getProvider", "Addresses: ", toAddress, tokenAmount, address);
+    try {
+      const res = await sendTransaction(
+        toAddress!,
+        Number(tokenAmount),
+        provider,
+        address!
+      );
+      console.log("res: ", res)
+    } catch (e) {
+      console.log("Error::sendTransaction: ", e )
+      // if(e){
+      //   const res = await sendTransaction(
+      //     toAddress!,
+      //     Number(tokenAmount),
+      //     provider,
+      //     address!
+      //   );
+      //   console.log("res: ", res)
+      // }
+    }
+
     await disconnect();
     router.back();
   };
@@ -139,6 +169,7 @@ export default function Home() {
           {/* <button onClick={handleSign}>Sign</button> */}
           {/* <button onClick={handleSend}>Send</button> */}
           <button onClick={disconnect}>Disconnect</button>
+          {/* <button onClick={handleSend}>send</button> */}
         </div>
       )}
 

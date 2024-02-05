@@ -1,18 +1,37 @@
 import { usdc_abi, usdt_abi } from "./abi";
-import { mainnet, goerli, polygonMumbai, sepolia, fantomTestnet } from "viem/chains";
+import {
+  mainnet,
+  goerli,
+  polygonMumbai,
+  sepolia,
+  fantomTestnet,
+  avalancheFuji,
+  avalanche,
+} from "viem/chains";
 
 // wallet connect project id
 export const projectId: string = "0854ce5ff73158f88d93e8f047ff33d7";
 
 // all chains
-export const allChains = [mainnet, goerli, sepolia, polygonMumbai, fantomTestnet];
+export const allChains = [
+  mainnet,
+  goerli,
+  sepolia,
+  polygonMumbai,
+  fantomTestnet,
+  avalancheFuji,
+  avalanche,
+];
 export const network = {
   ethereum: mainnet.name,
   goerli: goerli.name,
   sepolia: sepolia.name,
   polygon_mumbai: polygonMumbai.name,
   fantomTestnet: fantomTestnet.name,
+  avalancheFuji: avalancheFuji.name,
+  avalanche: avalanche.name,
   solana: "solana",
+  bitcoin: "bitcoin",
 };
 
 // all currency list
@@ -23,7 +42,9 @@ export const currency: any = [
   ["myusdt", 10000000],
   ["matic", "0.0001"],
   ["fmt", "0.0001"],
-  ["sol", 1000000],
+  ["avax", "0.0001"],
+  ["sol", 10000],
+  ["btc", 1000000000],
 ];
 
 // network or chains for each currency
@@ -36,10 +57,17 @@ export const networkForCurrency: any = {
     network.sepolia,
   ],
   usdt: [network.ethereum, network.goerli, network.sepolia],
-  myusdt: [network.goerli, network.sepolia, network.polygon_mumbai, network.fantomTestnet],
+  myusdt: [
+    network.goerli,
+    network.sepolia,
+    network.polygon_mumbai,
+    network.fantomTestnet,
+  ],
   matic: [network.polygon_mumbai],
   fmt: [network.fantomTestnet],
+  avax: [network.avalancheFuji, network.avalanche],
   sol: [network.solana],
+  btc: [network.bitcoin],
 };
 
 // native blockchain currency for direct transfer
@@ -47,6 +75,7 @@ export const nativeCurrency: any = {
   eth: true,
   matic: true,
   fmt: true,
+  avax: true,
 };
 
 // for native currensy transfer
@@ -66,7 +95,16 @@ export const chainsData: any = {
   [network.fantomTestnet]: {
     toAddress: "0x38B8627A507E3fB2F3dD945BC35Cf886A6f5c383",
   },
+  [network.avalancheFuji]: {
+    toAddress: "0x38B8627A507E3fB2F3dD945BC35Cf886A6f5c383",
+  },
+  [network.avalanche]: {
+    toAddress: "0x38B8627A507E3fB2F3dD945BC35Cf886A6f5c383",
+  },
   [network.solana]: {
+    toAddress: "2jE2bbdq555MXsqvgsQAXsRAVVJWWYn64m5C6GfKjiKH",
+  },
+  [network.bitcoin]: {
     toAddress: "FsHdPWvGPPz4i2KB8UdXi1bHQwHXHNTdARMbzfQyJh8H",
   },
 };

@@ -18,7 +18,9 @@ export default function SelectChain({
 
   const handleContinue = () => {
     if (selected?.name === network.solana) {
-      router.replace(`/solanaTransfer`);
+      router.replace(`/solanaTransfer/${selected?.name}/${currency}`);
+    } else if (selected?.name === network.bitcoin) {
+      router.replace(`/bitcoinTransfer/${selected?.name}/${currency}`);
     } else {
       router.replace(`/transfer/${selected?.name}/${currency}`);
     }
