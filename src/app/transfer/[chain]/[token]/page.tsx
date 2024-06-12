@@ -69,10 +69,10 @@ export default function Transfer({
     return () => {
       const atReload = async () => {
         setTimeout(() => {
-          disconnect().then(() => {
-            console.log("--disconnect++");
-            setConnectButton(true);
-          });
+          // disconnect().then(() => {
+          //   console.log("--disconnect++");
+          // });
+          setConnectButton(true);
         }, 800);
       };
       (async () => {
@@ -116,8 +116,8 @@ export default function Transfer({
 
   return (
     <main className={styles.main}>
-      {
-        <div className={styles.description}>
+      
+        {/* <div className={styles.description}> */}
           {/* for Native Currency */}
           {connectButton &&
             tokenName &&
@@ -150,8 +150,8 @@ export default function Transfer({
                 }}
               />
             )}
-        </div>
-      }
+        {/* </div> */}
+      
 
       <div className={styles.description}></div>
       <div className={styles.center}>

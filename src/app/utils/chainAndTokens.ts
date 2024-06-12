@@ -7,6 +7,7 @@ import {
   fantomTestnet,
   avalancheFuji,
   avalanche,
+  bscTestnet,
 } from "viem/chains";
 
 // wallet connect project id
@@ -21,6 +22,7 @@ export const allChains = [
   fantomTestnet,
   avalancheFuji,
   avalanche,
+  bscTestnet,
 ];
 export const network = {
   ethereum: mainnet.name,
@@ -30,6 +32,7 @@ export const network = {
   fantomTestnet: fantomTestnet.name,
   avalancheFuji: avalancheFuji.name,
   avalanche: avalanche.name,
+  bscTestnet: bscTestnet.name,
   solana: "solana",
   bitcoin: "bitcoin",
 };
@@ -43,6 +46,8 @@ export const currency: any = [
   ["matic", "0.0001"],
   ["fmt", "0.0001"],
   ["avax", "0.0001"],
+  ["bnb", "0.000000001"],
+  ["soco", 1],
   ["sol", 10000],
   ["btc", 1000000000],
 ];
@@ -50,12 +55,7 @@ export const currency: any = [
 // network or chains for each currency
 export const networkForCurrency: any = {
   eth: [network.ethereum, network.goerli, network.sepolia],
-  usdc: [
-    network.ethereum,
-    network.polygon_mumbai,
-    network.goerli,
-    network.sepolia,
-  ],
+  usdc: [network.ethereum, network.polygon_mumbai, network.goerli, network.sepolia],
   usdt: [network.ethereum, network.goerli, network.sepolia],
   myusdt: [
     network.goerli,
@@ -63,9 +63,11 @@ export const networkForCurrency: any = {
     network.polygon_mumbai,
     network.fantomTestnet,
   ],
+  soco: [network.bscTestnet],
   matic: [network.polygon_mumbai],
   fmt: [network.fantomTestnet],
   avax: [network.avalancheFuji, network.avalanche],
+  bnb: [network.bscTestnet],
   sol: [network.solana],
   btc: [network.bitcoin],
 };
@@ -76,6 +78,7 @@ export const nativeCurrency: any = {
   matic: true,
   fmt: true,
   avax: true,
+  bnb: true,
 };
 
 // for native currensy transfer
@@ -99,6 +102,9 @@ export const chainsData: any = {
     toAddress: "0x38B8627A507E3fB2F3dD945BC35Cf886A6f5c383",
   },
   [network.avalanche]: {
+    toAddress: "0x38B8627A507E3fB2F3dD945BC35Cf886A6f5c383",
+  },
+  [network.bscTestnet]: {
     toAddress: "0x38B8627A507E3fB2F3dD945BC35Cf886A6f5c383",
   },
   [network.solana]: {
@@ -172,6 +178,13 @@ export const tokens: any = {
   [fantomTestnet.id]: {
     myusdt: {
       contractAddress: "0x8b879ae3f205d94e8b9e32bca553654d0e8128af",
+      recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
+      abi: [...usdc_abi],
+    },
+  },
+  [bscTestnet.id]: {
+    soco: {
+      contractAddress: "0xCB2DeaBfF01B1891729f62864A12941E571F6247",
       recipientAddress: "0xbB03661F287d77e8612CBD0385a24E547C7a04d4",
       abi: [...usdc_abi],
     },

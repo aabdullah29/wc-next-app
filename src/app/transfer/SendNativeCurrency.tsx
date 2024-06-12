@@ -4,6 +4,7 @@ import {
   usePrepareSendTransaction,
   useSendTransaction,
   useBalance,
+  useSignMessage,
 } from "wagmi";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { disconnect } from "@wagmi/core";
@@ -34,6 +35,7 @@ export default function SendNativeCurrency(props: SendERC20Props) {
   });
 
   const router = useRouter();
+  const { signMessage } = useSignMessage();
 
   const [modal, setModal] = useState<any>();
   let intervalId: any;
@@ -54,58 +56,59 @@ export default function SendNativeCurrency(props: SendERC20Props) {
   // get the transfer function
   const { sendTransaction, isSuccess, data, isError } = useSendTransaction({
     ...config,
-    onError: (error) => {
-      const cause = `${error.cause}`;
-      const errMsg = "UserRejectedRequestError:";
-      modalOnError(
-        {
-          counter: 3,
-          name: `Go back after `,
-          message: cause.includes(errMsg)
-            ? "User rejected the request."
-            : error.cause,
-        },
-        setModal,
-        () => {
-          disconnect().then(router.back);
-        }
-      );
-    },
+    // onError: (error) => {
+    //   const cause = `${error.cause}`;
+    //   const errMsg = "UserRejectedRequestError:";
+    //   modalOnError(
+    //     {
+    //       counter: 3,
+    //       name: `Go back after `,
+    //       message: cause.includes(errMsg)
+    //         ? "User rejected the request."
+    //         : error.cause,
+    //     },
+    //     setModal,
+    //     () => {
+    //       disconnect().then(router.back);
+    //     }
+    //   );
+    // },
   });
 
   useEffect(() => {
     console.log("useBalance: data:=:", dataBalance);
     if (error?.name === "EstimateGasExecutionError" || isErrorBalance) {
-      modalOnError({
-        name: `Error Type: ${error?.name}`,
-        message: "You don't have enough balance for this transaction.",
-      }, setModal);
+      modalOnError(
+        {
+          name: `Error Type: ${error?.name}`,
+          message: "You don't have enough balance for this transaction.",
+        },
+        setModal
+      );
     } else if (props.callFunction === "call" && sendTransaction) {
-      console.log("sending native currency:=: call:", props?.callFunction);
-      sendTransaction?.();
-      props.setCallFunction("done");
+      // console.log("sending native currency:=: call:", props?.callFunction);
+      // sendTransaction?.();
+      // props.setCallFunction("done");
     }
   }, [props.callFunction, sendTransaction, error?.name]);
 
   return (
-    <>
-      {data?.hash && (
-        <WaitForTransaction txh={data.hash} chainId={props.chainId} />
-      )}
-      <CustomModal isOpen={modal} onClose={handleCloseModal}>
-        <h2>{`${
-          modal?.counter ? modal?.name + modal?.counter : modal?.name
-        }`}</h2>
-        <p style={{ marginTop: 20 }}>{modal?.message}</p>
-      </CustomModal>
-    </>
-    // <div>
-    //   <button disabled={!write} onClick={() => write?.()}>
-    //     Transfer
-    //   </button>
-    //   {isLoading && <div>Check Wallet</div>}
-    //   {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
-    // </div>
+    <div>
+      <>
+        {data?.hash && <WaitForTransaction txh={data.hash} chainId={props.chainId} />}
+        <CustomModal isOpen={modal} onClose={handleCloseModal}>
+          <h2>{`${modal?.counter ? modal?.name + modal?.counter : modal?.name}`}</h2>
+          <p style={{ marginTop: 20 }}>{modal?.message}</p>
+        </CustomModal>
+      </>
+      <button disabled={!sendTransaction} onClick={() => sendTransaction?.()}>
+        Transfer
+      </button>
+      <button onClick={() => signMessage({ message: "hello world" })}>
+        Sign message
+      </button>
+      {/* {isLoading && <div>Check Wallet</div>}
+      {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>} */}
+    </div>
   );
 }
-

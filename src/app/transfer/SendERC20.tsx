@@ -25,6 +25,7 @@ export default function SendERC20(props: SendERC20Props) {
     tokens[props?.chainId][props?.tokenName]
       ? tokens[props?.chainId][props?.tokenName]
       : tokens[5]["usdc_abi"];
+      console.log("token Data: ",tokenData)
 
   const {
     data: dataBalance,
@@ -38,10 +39,10 @@ export default function SendERC20(props: SendERC20Props) {
   const router = useRouter();
   const [modal, setModal] = useState<any>();
   const handleCloseModal = () => {
-    disconnect().then(() => {
-      setModal(undefined);
-      router.back();
-    });
+    // disconnect().then(() => {
+    //   setModal(undefined);
+    //   router.back();
+    // });
   };
 
   // prepare the transaction
@@ -56,42 +57,43 @@ export default function SendERC20(props: SendERC20Props) {
     chainId: props.chainId,
   });
 
+  console.log('config', {config})
   // get the transfer function
   const { data, isLoading, isSuccess, isError, write } = useContractWrite({
     ...config,
-    onError: (error) => {
-      const cause = `${error.cause}`;
-      const errMsg = "UserRejectedRequestError:";
-      modalOnError(
-        {
-          counter: 3,
-          name: `Go back after `,
-          message: cause.includes(errMsg)
-            ? "User rejected the request."
-            : error.cause,
-        },
-        setModal,
-        () => {
-          disconnect().then(router.back);
-        }
-      );
-    },
+    // onError: (error) => {
+    //   const cause = `${error.cause}`;
+    //   const errMsg = "UserRejectedRequestError:";
+    //   modalOnError(
+    //     {
+    //       counter: 3,
+    //       name: `Go back after `,
+    //       message: cause.includes(errMsg)
+    //         ? "User rejected the request."
+    //         : error.cause,
+    //     },
+    //     setModal,
+    //     () => {
+    //       disconnect().then(router.back);
+    //     }
+    //   );
+    // },
   });
 
   useEffect(() => {
     setModal(undefined);
     console.log("useBalance: data:=:", dataBalance);
-    if ((error || isErrorBalance) && Number(dataBalance?.formatted ?? 0) <= 0) {
-      modalOnError({
-        name: `Error Type: transferAmountExceedsBalance`,
-        message: "You don't have enough tokens for this transaction.",
-      }, setModal);
-    } else if (props.callFunction === "call" && write) {
-      console.log("sending erc20:=: call:", props?.callFunction);
-      write?.();
-      props.setCallFunction("done");
-    }
-  }, [props.callFunction, write, dataBalance]);
+    // if ((error || isErrorBalance) && Number(dataBalance?.formatted ?? 0) <= 0) {
+    //   modalOnError({
+    //     name: `Error Type: transferAmountExceedsBalance`,
+    //     message: "You don't have enough tokens for this transaction.",
+    //   }, setModal);
+    // } else if (props.callFunction === "call" && write) {
+    //   console.log("sending erc20:=: call:", props?.callFunction);
+    //   write?.();
+    //   props.setCallFunction("done");
+    // }
+  }, [dataBalance]);
 
   return (
     <>
@@ -104,6 +106,9 @@ export default function SendERC20(props: SendERC20Props) {
         }`}</h2>
         <p style={{ marginTop: 20 }}>{modal?.message}</p>
       </CustomModal>
+      <button disabled={!write} onClick={() => write?.()}>
+        Transfer
+      </button>
     </>
     // <div>
     //   <button disabled={!write} onClick={() => write?.()}>
