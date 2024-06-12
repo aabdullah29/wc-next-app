@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "2G2627N739.com.soccercoin.soccercoinwallet",
+        "paths": [
+          "*"
+        ]
+      }
+    ]
+  }
+}
