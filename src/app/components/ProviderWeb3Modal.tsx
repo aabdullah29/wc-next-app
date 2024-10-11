@@ -33,7 +33,7 @@ const provider = createWeb3Modal({
       id: 'myCustomWallet',
       name: 'My Custom Wallet',
       image_url: 'https://dev-front.soco-test.com/static/media/logo.55c72974ad636b375573.png', // Optional
-      mobile_link: 'https://dev-front.soco.com/dashboard', // Optional - Deeplink or universal
+      mobile_link: 'https://dev-front.soco-test.com/dashboard', // Optional - Deeplink or universal
     }
   ]
 });
